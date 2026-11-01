@@ -36,7 +36,7 @@ sealed interface McpServerState {
 class McpRuntime(
     private val context: Context, val settings: McpSettings, val usb: McpUsbSettings, private val tasks: RemoteTasks,
     val device: AndroidDeviceAccess,
-    val phoneTools: McpPhoneTools? = null,
+    val phoneProvider: McpPhoneProvider? = null,
 ) {
     private val _state = MutableStateFlow<McpServerState>(McpServerState.Off)
     val state: StateFlow<McpServerState> = _state.asStateFlow()
@@ -99,7 +99,7 @@ class McpRuntime(
         val network = want == McpModes.Listen.PrivateNetworks
         val h = RemoteHost(tasks, { if (settings.enabled.value) settings.token() else null }, settings.port, allowAllInterfaces = network,
             serverVersion = BuildConfig.VERSION_NAME, onError = { Log.w(TAG, "computer access server error", it) },
-            loopbackToken = usb::token, device = device.access, phoneTools = phoneTools)
+            loopbackToken = usb::token, device = device.access, phoneTools = phoneProvider?.phoneTools)
         return try {
             h.start()
             host = h
