@@ -149,6 +149,14 @@ class McpPhoneProvider(context: Context) {
                 shell.injectKey(displayId, keyCode)
             }
 
+            override suspend fun swipe(x1: Int, y1: Int, x2: Int, y2: Int, durationMs: Long): ActionResult = runAction {
+                val path = android.graphics.Path().apply {
+                    moveTo(x1.toFloat(), y1.toFloat())
+                    lineTo(x2.toFloat(), y2.toFloat())
+                }
+                a11y.gesture(displayId, path, durationMs.coerceAtLeast(1))
+            }
+
             override suspend fun waitStable(timeoutMs: Long): Boolean {
                 // 主屏没有虚拟屏的事件时钟：简单等待后认为稳定
                 delay(timeoutMs.coerceAtLeast(0))
