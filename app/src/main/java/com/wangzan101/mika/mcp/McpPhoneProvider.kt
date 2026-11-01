@@ -60,16 +60,15 @@ class McpPhoneProvider(context: Context) {
             val windows = a11y.windowsOn(displayId)
             val elements = windows.flatMap { window ->
                 window.root?.children?.map { node ->
+                    val rect = android.graphics.Rect()
+                    node.getBoundsInScreen(rect)
                     UiElement(
                         ref = "e${node.hashCode()}",
                         role = node.className?.toString()?.substringAfterLast('.') ?: "",
                         name = node.text?.toString()?.takeIf { it.isNotEmpty() } ?: "",
-                        centerX = (node.boundsInScreen.left + node.boundsInScreen.right) / 2,
-                        centerY = (node.boundsInScreen.top + node.boundsInScreen.bottom) / 2,
-                        bounds = listOf(
-                            node.boundsInScreen.left, node.boundsInScreen.top,
-                            node.boundsInScreen.right, node.boundsInScreen.bottom
-                        ),
+                        centerX = (rect.left + rect.right) / 2,
+                        centerY = (rect.top + rect.bottom) / 2,
+                        bounds = listOf(rect.left, rect.top, rect.right, rect.bottom),
                         resourceId = node.viewIdResourceName,
                         clickable = node.isClickable,
                         editable = node.isEditable,
@@ -80,13 +79,13 @@ class McpPhoneProvider(context: Context) {
                     )
                 } ?: emptyList()
             }
-            val (width, height) = getDisplaySize(a11y)
+            val dm = android.content.res.Resources.getSystem().displayMetrics
             return ScreenSnapshot(
                 snapshotId = "mcp_${System.currentTimeMillis()}",
                 packageName = null,
                 elements = elements,
-                width = width,
-                height = height,
+                width = dm.widthPixels,
+                height = dm.heightPixels,
                 windows = windows.map { w ->
                     UiWindowTree(
                         id = w.windowId,
