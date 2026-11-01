@@ -1,6 +1,10 @@
 package com.wangzan101.mika.mcp
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Rect
 import android.util.Log
 import com.wangzan101.mika.cap.phone.a11y.ScreenAccessibility
 import com.wangzan101.mika.cap.phone.shell.HelperHub
@@ -16,6 +20,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -35,6 +41,9 @@ class McpPhoneProvider(context: Context) {
     
     /** 无障碍服务是否已连接 */
     val isA11yReady: Boolean get() = ScreenAccessibility.instance.value != null
+
+    /** 快照元素引用到中心坐标的映射，按snapshotId缓存 */
+    private val refMapCache = ConcurrentHashMap<String, MutableMap<String, Pair<Int, Int>>>()
     
     /** 启动监听，当无障碍服务连接时自动创建McpPhoneTools */
     fun startListening(helperHub: () -> HelperHub? = { null }) {
@@ -62,8 +71,13 @@ class McpPhoneProvider(context: Context) {
                 window.root?.children?.map { node ->
                     val rect = android.graphics.Rect()
                     node.getBoundsInScreen(rect)
+                    val ref = "e${node.hashCode()}"
+                    // 缓存ref->center映射，供tapRef使用
+                    runCatching {
+                        refMapCache.computeIfAbsent("main") { ConcurrentHashMap() }[ref] = Pair((rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2)
+                    }.getOrNull()
                     UiElement(
-                        ref = "e${node.hashCode()}",
+                        ref = ref,
                         role = node.className?.toString()?.substringAfterLast('.') ?: "",
                         name = node.text?.toString()?.takeIf { it.isNotEmpty() } ?: "",
                         centerX = (rect.left + rect.right) / 2,
@@ -80,8 +94,9 @@ class McpPhoneProvider(context: Context) {
                 } ?: emptyList()
             }
             val dm = android.content.res.Resources.getSystem().displayMetrics
+            val snapshotId = "mcp_${System.currentTimeMillis()}"
             return ScreenSnapshot(
-                snapshotId = "mcp_${System.currentTimeMillis()}",
+                snapshotId = snapshotId,
                 packageName = null,
                 elements = elements,
                 width = dm.widthPixels,
@@ -100,14 +115,44 @@ class McpPhoneProvider(context: Context) {
                 }
             )
         }
-        
-        override suspend fun screenshotPng(): ByteArray? = null
+
+        override suspend fun screenshotPng(): ByteArray? = runAction {
+            when (val shot = a11y.takeMainScreenshot()) {
+                is ScreenAccessibility.MainShot.Ok -> {
+                    val stream = ByteArrayOutputStream()
+                    shot.bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+                    shot.bitmap.recycle()
+                    stream.toByteArray()
+                }
+                is ScreenAccessibility.MainShot.Secure -> {
+                    Log.w(TAG, "screenshot blocked by secure window")
+                    null
+                }
+                is ScreenAccessibility.MainShot.Failed -> {
+                    Log.e(TAG, "screenshot failed with code: ${shot.code}")
+                    null
+                }
+            }
+        } ?: null
 
         /** MCP 直接控制用户主屏(不走任务虚拟屏):坐标即屏幕坐标。 */
         private val displayId get() = android.view.Display.DEFAULT_DISPLAY
 
-        override suspend fun tapRef(ref: String, snapshotId: String): ActionResult =
-            ActionResult.Failed("tap_ref not supported; use x/y coordinates")
+        override suspend fun tapRef(ref: String, snapshotId: String): ActionResult {
+            // 按snapshotId查找缓存的ref映射
+            val mapKey = snapshotId.takeIf { it.isNotEmpty() } ?: "main"
+            val coords = refMapCache[mapKey]?.get(ref)
+                ?: refMapCache["main"]?.get(ref) // 回退到最新的
+            return if (coords != null) {
+                runAction {
+                    val dm = android.content.res.Resources.getSystem().displayMetrics
+                    shell.injectTap(displayId, coords.first, coords.second)
+                }
+            } else {
+                Log.w(TAG, "tap_ref: ref not found: $ref (snapshotId=$snapshotId)")
+                ActionResult.Failed("ref_expired or not found: $ref")
+            }
+        }
 
         override suspend fun tapXY(x: Int, y: Int): ActionResult = runAction {
             // 屏幕坐标换算:x/y 是 0-999 归一化的(McpPhoneTools 约定),这里换回像素
