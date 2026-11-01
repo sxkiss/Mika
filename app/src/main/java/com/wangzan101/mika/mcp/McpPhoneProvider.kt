@@ -145,6 +145,16 @@ class McpPhoneProvider(context: Context) {
                 shell.injectKey(displayId, android.view.KeyEvent.KEYCODE_BACK)
             }
 
+            override suspend fun pressKey(keyCode: Int): ActionResult = runAction {
+                shell.injectKey(displayId, keyCode)
+            }
+
+            override suspend fun waitStable(timeoutMs: Long): Boolean {
+                // 主屏没有虚拟屏的事件时钟：简单等待后认为稳定
+                delay(timeoutMs.coerceAtLeast(0))
+                return true
+            }
+
             override suspend fun openApp(packageName: String, cold: Boolean): ActionResult = try {
                 val intent = packageManager.getLaunchIntentForPackage(packageName)
                 if (intent != null) {
