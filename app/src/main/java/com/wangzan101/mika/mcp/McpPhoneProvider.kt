@@ -169,11 +169,6 @@ class McpPhoneProvider(context: Context) {
                 Pair(pkg, label)
             }
         
-        private fun getDisplaySize(a11y: ScreenAccessibility): Pair<Int, Int> {
-            val dm = android.content.res.Resources.getSystem().displayMetrics
-            return Pair(dm.widthPixels, dm.heightPixels)
-        }
-        
         private fun getInstalledApps(): List<String> =
             packageManager.getInstalledPackages(0)
                 .map { it.packageName }
