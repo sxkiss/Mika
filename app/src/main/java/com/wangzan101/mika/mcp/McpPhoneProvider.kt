@@ -163,6 +163,12 @@ class McpPhoneProvider(context: Context) {
                 return true
             }
 
+            override suspend fun awaitChange(timeoutMs: Long): Boolean {
+                // 主屏不追踪界面事件：等待后返回 false 表示未检测到变化
+                delay(timeoutMs.coerceAtLeast(0))
+                return false
+            }
+
             override suspend fun openApp(packageName: String, cold: Boolean): ActionResult = try {
                 val intent = packageManager.getLaunchIntentForPackage(packageName)
                 if (intent != null) {
