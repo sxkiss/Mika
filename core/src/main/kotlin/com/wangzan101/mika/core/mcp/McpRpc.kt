@@ -25,7 +25,8 @@ import java.util.Base64
  * 进到这里的请求已经过了 [RemoteAccess](令牌、来源、限流、路径)。
  */
 class McpRpc(
-    private val tools: McpTaskTools,
+    private val tools: McpTaskTools? = null,
+    private val phoneTools: McpPhoneTools? = null,
     private val serverVersion: String,
     /** 每个过了门口、能读出来的请求:对方说自己是哪个客户端(没说时为空)。 */
     private val onRequest: (remote: java.net.InetAddress, clientName: String?) -> Unit = { _, _ -> },
@@ -88,7 +89,7 @@ class McpRpc(
                 put("instructions", INSTRUCTIONS)
             }
             "ping" -> JsonObject(emptyMap())
-            "tools/list" -> buildJsonObject { put("tools", tools.definitions()) }
+            "tools/list" -> buildJsonObject { put("tools", allTools().flatMap { it?.definitions() ?: emptyList() }) }
             "tools/call" -> when (val r = callTool(params)) {
                 is Call.Done -> r.result
                 is Call.Bad -> return error(400, id, INVALID_PARAMS, r.message)
@@ -123,7 +124,7 @@ class McpRpc(
                 }
             }
             "ping" -> { onRequest(req.remote, null); JsonObject(emptyMap()) }
-            "tools/list" -> { onRequest(req.remote, null); buildJsonObject { put("tools", tools.definitions()) } }
+            "tools/list" -> { onRequest(req.remote, null); buildJsonObject { put("tools", allTools().flatMap { it?.definitions() ?: emptyList() }) } }
             "tools/call" -> {
                 onRequest(req.remote, null)
                 when (val r = callTool(params)) {
@@ -142,16 +143,26 @@ class McpRpc(
     }
 
     /** 工具名不认得、参数不是对象:协议错误。参数内容不对、任务找不到:工具执行出错(isError),交给对面的模型看着改。 */
+    /** 合并任务工具和手机原语工具。 */
+    private val allTools get() = listOf(tools, phoneTools)
+
     private fun callTool(params: JsonObject): Call {
         val name = (params["name"] as? JsonPrimitive)?.takeIf { it.isString }?.content ?: return Call.Bad("params.name must be a string")
-        if (!tools.has(name)) return Call.Bad("Unknown tool: $name")
+        // 先查任务工具，再查手机工具
+        val toolCall: suspend (String) -> JsonObject? = if (tools?.has(name) == true) {
+            { tools!!.call(name, it) }
+        } else if (phoneTools != null && name.startsWith("phone_")) {
+            { runCatching { Json.decodeFromString<JsonObject>(phoneTools.call(name, it.toString())) }.getOrNull() }
+        } else {
+            return Call.Bad("Unknown tool: $name")
+        }
         val args = when (val a = params["arguments"]) {
             null, JsonNull -> JsonObject(emptyMap())
             is JsonObject -> a
             else -> return Call.Bad("params.arguments must be an object")
         }
         val out = try {
-            runBlocking { tools.call(name, args) }
+            runBlocking { toolCall(name) ?: JsonObject(emptyMap()) }
         } catch (e: McpTaskTools.ToolError) {
             return Call.Done(toolResult(e.message ?: "error", null, isError = true))
         } catch (e: Exception) {
