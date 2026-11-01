@@ -157,14 +157,13 @@ class McpRpc(
             is JsonObject -> a
             else -> return Call.Bad("params.arguments must be an object")
         }
+        val isTask = tools?.has(name) == true
+        val isPhone = phoneTools?.has(name) == true
+        if (!isTask && !isPhone) return Call.Bad("Unknown tool: $name")
         val out = try {
             runBlocking {
-                when {
-                    tools?.has(name) == true -> tools!!.call(name, args)
-                    phoneTools?.has(name) == true ->
-                        Json.decodeFromString<JsonObject>(phoneTools!!.call(name, args.toString()))
-                    else -> return Call.Bad("Unknown tool: $name")
-                }
+                if (isTask) tools!!.call(name, args)
+                else Json.decodeFromString<JsonObject>(phoneTools!!.call(name, args.toString()))
             }
         } catch (e: McpTaskTools.ToolError) {
             return Call.Done(toolResult(e.message ?: "error", null, isError = true))

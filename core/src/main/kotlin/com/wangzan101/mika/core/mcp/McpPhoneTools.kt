@@ -143,7 +143,7 @@ class McpPhoneTools(
 
     private fun resultJson(result: ActionResult): String = when (result) {
         is ActionResult.Ok -> ok()
-        is ActionResult.Failed -> errorJson(result.error)
+        is ActionResult.Failed -> errorJson(result.reason)
         else -> errorJson("unknown result")
     }
 
