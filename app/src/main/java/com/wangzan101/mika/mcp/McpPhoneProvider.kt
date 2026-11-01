@@ -13,6 +13,7 @@ import com.wangzan101.mika.core.uistate.ActionResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
@@ -102,18 +103,50 @@ class McpPhoneProvider(context: Context) {
         }
         
         override suspend fun screenshotPng(): ByteArray? = null
-        
-        override suspend fun tapRef(ref: String, snapshotId: String): ActionResult = ActionResult.Ok
-        
-        override suspend fun tapXY(x: Int, y: Int): ActionResult = ActionResult.Ok
-        
-        override suspend fun typeText(ref: String?, snapshotId: String?, text: String): ActionResult = ActionResult.Ok
-        
-        override suspend fun clearText(ref: String?, snapshotId: String?): ActionResult = ActionResult.Ok
-        
-        override suspend fun scroll(ref: String?, snapshotId: String?, down: Boolean): ActionResult = ActionResult.Ok
-        
-        override suspend fun back(): ActionResult = ActionResult.Ok
+
+        /** MCP 直接控制用户主屏(不走任务虚拟屏):坐标即屏幕坐标。 */
+        private val displayId get() = android.view.Display.DEFAULT_DISPLAY
+
+        override suspend fun tapRef(ref: String, snapshotId: String): ActionResult =
+            ActionResult.Failed("tap_ref not supported; use x/y coordinates")
+
+        override suspend fun tapXY(x: Int, y: Int): ActionResult = runAction {
+            // 屏幕坐标换算:x/y 是 0-999 归一化的(McpPhoneTools 约定),这里换回像素
+            val dm = android.content.res.Resources.getSystem().displayMetrics
+            shell.injectTap(displayId, x * dm.widthPixels / 999, y * dm.heightPixels / 999)
+        }
+
+        override suspend fun typeText(ref: String?, snapshotId: String?, text: String): ActionResult = runAction {
+            // shell 没有 injectText:走剪贴板粘贴(setClipText 以 shell 身份设置,injectCtrlKey 只放行 A/V)
+            shell.setClipText(text)
+            delay(100)
+            shell.injectCtrlKey(displayId, android.view.KeyEvent.KEYCODE_V)
+        }
+
+        override suspend fun clearText(ref: String?, snapshotId: String?): ActionResult = runAction {
+            // 全选删除
+            shell.injectCtrlKey(displayId, android.view.KeyEvent.KEYCODE_A)
+            delay(50)
+            shell.injectKey(displayId, android.view.KeyEvent.KEYCODE_DEL)
+        }
+
+        override suspend fun scroll(ref: String?, snapshotId: String?, down: Boolean): ActionResult = runAction {
+            val dm = android.content.res.Resources.getSystem().displayMetrics
+            val cx = dm.widthPixels / 2f
+            val dist = dm.heightPixels / 3f
+            val cy = dm.heightPixels / 2f
+            val fromY = if (down) cy + dist else cy - dist
+            val toY = if (down) cy - dist else cy + dist
+            val path = android.graphics.Path().apply {
+                moveTo(cx, fromY)
+                lineTo(cx, toY)
+            }
+            a11y.gesture(displayId, path, 300L)
+        }
+
+        override suspend fun back(): ActionResult = runAction {
+            shell.injectKey(displayId, android.view.KeyEvent.KEYCODE_BACK)
+        }
         
         override suspend fun openApp(packageName: String, cold: Boolean): ActionResult {
             return try {
@@ -155,5 +188,15 @@ class McpPhoneProvider(context: Context) {
     
     companion object {
         private const val TAG = "McpPhoneProvider"
+    }
+
+    private suspend inline fun runAction(crossinline block: () -> Boolean): ActionResult {
+        return try {
+            val ok = block()
+            if (ok) ActionResult.Ok else ActionResult.Failed("action failed")
+        } catch (e: Exception) {
+            Log.e(TAG, "action failed", e)
+            ActionResult.Failed(e.message ?: "action error")
+        }
     }
 }
