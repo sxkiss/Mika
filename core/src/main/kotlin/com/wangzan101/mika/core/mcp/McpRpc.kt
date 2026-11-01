@@ -11,6 +11,7 @@ import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.add
+import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.put
@@ -89,7 +90,7 @@ class McpRpc(
                 put("instructions", INSTRUCTIONS)
             }
             "ping" -> JsonObject(emptyMap())
-            "tools/list" -> buildJsonObject { put("tools", allTools().flatMap { it?.definitions() ?: emptyList() }) }
+            "tools/list" -> buildJsonObject { put("tools", allToolDefinitions()) }
             "tools/call" -> when (val r = callTool(params)) {
                 is Call.Done -> r.result
                 is Call.Bad -> return error(400, id, INVALID_PARAMS, r.message)
@@ -124,7 +125,7 @@ class McpRpc(
                 }
             }
             "ping" -> { onRequest(req.remote, null); JsonObject(emptyMap()) }
-            "tools/list" -> { onRequest(req.remote, null); buildJsonObject { put("tools", allTools().flatMap { it?.definitions() ?: emptyList() }) } }
+            "tools/list" -> { onRequest(req.remote, null); buildJsonObject { put("tools", allToolDefinitions()) } }
             "tools/call" -> {
                 onRequest(req.remote, null)
                 when (val r = callTool(params)) {
@@ -143,26 +144,28 @@ class McpRpc(
     }
 
     /** 工具名不认得、参数不是对象:协议错误。参数内容不对、任务找不到:工具执行出错(isError),交给对面的模型看着改。 */
-    /** 合并任务工具和手机原语工具。 */
-    private val allTools get() = listOf(tools, phoneTools)
+    /** 合并任务工具和手机原语工具的定义数组。 */
+    private fun allToolDefinitions(): JsonArray = buildJsonArray {
+        tools?.definitions()?.forEach { add(it) }
+        phoneTools?.definitions()?.forEach { add(it) }
+    }
 
     private fun callTool(params: JsonObject): Call {
         val name = (params["name"] as? JsonPrimitive)?.takeIf { it.isString }?.content ?: return Call.Bad("params.name must be a string")
-        // 先查任务工具，再查手机工具
-        val toolCall: suspend (String) -> JsonObject? = if (tools?.has(name) == true) {
-            { tools!!.call(name, it) }
-        } else if (phoneTools != null && name.startsWith("phone_")) {
-            { runCatching { Json.decodeFromString<JsonObject>(phoneTools.call(name, it.toString())) }.getOrNull() }
-        } else {
-            return Call.Bad("Unknown tool: $name")
-        }
         val args = when (val a = params["arguments"]) {
             null, JsonNull -> JsonObject(emptyMap())
             is JsonObject -> a
             else -> return Call.Bad("params.arguments must be an object")
         }
         val out = try {
-            runBlocking { toolCall(name) ?: JsonObject(emptyMap()) }
+            runBlocking {
+                when {
+                    tools?.has(name) == true -> tools!!.call(name, args)
+                    phoneTools?.has(name) == true ->
+                        Json.decodeFromString<JsonObject>(phoneTools!!.call(name, args.toString()))
+                    else -> return Call.Bad("Unknown tool: $name")
+                }
+            }
         } catch (e: McpTaskTools.ToolError) {
             return Call.Done(toolResult(e.message ?: "error", null, isError = true))
         } catch (e: Exception) {
