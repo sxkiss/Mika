@@ -2,9 +2,6 @@ package com.wangzan101.mika.mcp
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Rect
 import android.util.Log
 import com.wangzan101.mika.cap.phone.a11y.ScreenAccessibility
 import com.wangzan101.mika.cap.phone.shell.HelperHub
@@ -116,7 +113,7 @@ class McpPhoneProvider(context: Context) {
             )
         }
 
-        override suspend fun screenshotPng(): ByteArray? = runAction {
+        override suspend fun screenshotPng(): ByteArray? = try {
             when (val shot = a11y.takeMainScreenshot()) {
                 is ScreenAccessibility.MainShot.Ok -> {
                     val stream = ByteArrayOutputStream()
@@ -133,7 +130,10 @@ class McpPhoneProvider(context: Context) {
                     null
                 }
             }
-        } ?: null
+        } catch (e: Exception) {
+            Log.e(TAG, "screenshot error", e)
+            null
+        }
 
         /** MCP 直接控制用户主屏(不走任务虚拟屏):坐标即屏幕坐标。 */
         private val displayId get() = android.view.Display.DEFAULT_DISPLAY
@@ -229,7 +229,7 @@ class McpPhoneProvider(context: Context) {
         private const val TAG = "McpPhoneProvider"
     }
 
-    private suspend inline fun runAction(crossinline block: () -> Boolean): ActionResult {
+    private suspend fun runAction(block: suspend () -> Boolean): ActionResult {
         return try {
             val ok = block()
             if (ok) ActionResult.Ok else ActionResult.Failed("action failed")
