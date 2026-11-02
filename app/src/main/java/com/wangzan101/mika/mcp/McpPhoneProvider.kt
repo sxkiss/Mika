@@ -103,7 +103,8 @@ class McpPhoneProvider(context: Context) {
             }
         }
 
-        return AndroidScreen(a11y, shell, lazyDisplay!!)
+        // 包一层 McpScreenPort：换算 0–999 坐标，并在微信这类读不出无障碍树的 App 上走 OCR 兜底
+        return McpScreenPort(AndroidScreen(a11y, shell, lazyDisplay!!))
     }
 
     fun clear() {
