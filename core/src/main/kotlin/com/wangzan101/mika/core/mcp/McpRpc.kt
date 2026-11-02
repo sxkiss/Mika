@@ -26,7 +26,7 @@ import java.util.Base64
  * 进到这里的请求已经过了 [RemoteAccess](令牌、来源、限流、路径)。
  */
 class McpRpc(
-    private val tools: McpPhoneTools? = null,
+    private val tools: McpTaskTools? = null,
     private val phoneTools: McpPhoneTools? = null,
     /** Dynamic provider: called on each request so late-init'd phoneTools become visible. */
     private val phoneToolsProvider: (() -> McpPhoneTools?)? = null,
