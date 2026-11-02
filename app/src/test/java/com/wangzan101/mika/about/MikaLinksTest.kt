@@ -38,7 +38,7 @@ class MikaLinksTest {
     @Test
     fun issueUrlIsEncoded() {
         val url = MikaLinks.issueUrl(device)
-        assertTrue(url.startsWith("https://github.com/wangzan101/Mika/issues/new?title=&body="))
+        assertTrue(url.startsWith("https://github.com/sxkiss/Mika/issues/new?title=&body="))
         val query = url.substringAfter('?')
         assertFalse("no raw spaces or newlines", query.any { it == ' ' || it == '\n' || it == '+' })
         assertFalse("no raw non-ASCII", query.any { it.code > 127 })
@@ -50,9 +50,9 @@ class MikaLinksTest {
 
     @Test
     fun linksPointAtTheRepo() {
-        assertEquals("https://github.com/wangzan101/Mika#readme", MikaLinks.README)
+        assertEquals("https://github.com/sxkiss/Mika#readme", MikaLinks.README)
         assertEquals("https://x.com/wangzan101", MikaLinks.X)
         assertTrue(MikaLinks.X_GROUP.startsWith("https://x.com/i/chat/group_join/"))
-        assertTrue(MikaLinks.LATEST_RELEASE_API.endsWith("/repos/wangzan101/Mika/releases/latest"))
+        assertTrue(MikaLinks.LATEST_RELEASE_API.startsWith("https://api.github.com/repos/sxkiss/Mika"))
     }
 }

@@ -13,10 +13,10 @@ README 里只放了最常被问到的几条，这里是完整的问答。手机�
 Mika 在一块单独的后台屏上操作 App，安卓 12 起可以使用手机操作能力；安卓 12、13 上操作后台屏可能影响主屏焦点。安卓 14 起后台屏有自己的焦点，不会影响你在主屏打字，所以更推荐。只用网页、沙箱和聊天，安卓 11 也能用。
 
 **不确定自己的手机行不行？**
-设置 › 恢复与修复 › 兼容性自检，一分钟跑完，结果可以一键用[设备报告](https://github.com/wangzan101/Mika/issues/new?template=device-report.yml)反馈给我们。
+设置 › 恢复与修复 › 兼容性自检，一分钟跑完，结果可以一键用[设备报告](https://github.com/sxkiss/Mika/issues/new?template=device-report.yml)反馈给我们。
 
 **APK 更新从哪来？**
-只从本仓库的 [GitHub Releases](https://github.com/wangzan101/Mika/releases) 发布。每个版本改了什么，都写在那个版本的发布说明里。App 里「关于 › 检查更新」也能直接下载安装。
+只从本仓库的 [GitHub Releases](https://github.com/sxkiss/Mika/releases) 发布。每个版本改了什么，都写在那个版本的发布说明里。App 里「关于 › 检查更新」也能直接下载安装。
 
 ## 手机操作
 

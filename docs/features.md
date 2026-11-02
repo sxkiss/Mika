@@ -85,7 +85,7 @@
 手机用数据线连上电脑，在手机上打开 USB 调试（开发者选项里别的开关不要动，除非 AI 助手请你打开；有的会清除手机数据），然后把下面这句话发给电脑上能执行命令的 AI 助手：
 
 ```
-请按 https://github.com/wangzan101/Mika/blob/main/docs/install-with-agent.md 的步骤，帮我把 Mika 安装到通过 USB 连着的安卓手机上。
+请按 https://github.com/sxkiss/Mika/blob/main/docs/install-with-agent.md 的步骤，帮我把 Mika 安装到通过 USB 连着的安卓手机上。
 ```
 
 它会检查手机、下载安装、打开需要的权限，需要你在手机上点的时候会停下来告诉你。API Key 由你自己在 Mika 里填，不经过它。如果你也要求电脑访问，AI 助手会按你选择的接入方式继续配置。步骤见[用电脑上的 AI 助手安装](install-with-agent.md)。

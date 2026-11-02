@@ -9,11 +9,11 @@
 
 보이지 않는 백그라운드 화면에서 일하기 때문에, 그동안에도 휴대폰은 평소처럼 쓰면 됩니다.
 
-<a href="https://github.com/wangzan101/Mika/releases/latest"><img src="https://img.shields.io/badge/APK%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-Android%2011%2B-2ea043?style=for-the-badge&logo=android&logoColor=white" alt="APK 다운로드" /></a>
+<a href="https://github.com/sxkiss/Mika/releases/latest"><img src="https://img.shields.io/badge/APK%20%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C-Android%2011%2B-2ea043?style=for-the-badge&logo=android&logoColor=white" alt="APK 다운로드" /></a>
 
-<a href="https://github.com/wangzan101/Mika/stargazers"><img src="https://img.shields.io/github/stars/wangzan101/Mika?style=flat&logo=github&label=Star&color=1f6feb" alt="stars" /></a>
-<a href="https://github.com/wangzan101/Mika/releases"><img src="https://img.shields.io/github/downloads/wangzan101/Mika/total?label=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C&color=2ea043" alt="downloads" /></a>
-<a href="https://github.com/wangzan101/Mika/releases/latest"><img src="https://img.shields.io/github/v/release/wangzan101/Mika?include_prereleases&label=%EB%B2%84%EC%A0%84" alt="version" /></a>
+<a href="https://github.com/sxkiss/Mika/stargazers"><img src="https://img.shields.io/github/stars/sxkiss/Mika?style=flat&logo=github&label=Star&color=1f6feb" alt="stars" /></a>
+<a href="https://github.com/sxkiss/Mika/releases"><img src="https://img.shields.io/github/downloads/sxkiss/Mika/total?label=%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C&color=2ea043" alt="downloads" /></a>
+<a href="https://github.com/sxkiss/Mika/releases/latest"><img src="https://img.shields.io/github/v/release/sxkiss/Mika?include_prereleases&label=%EB%B2%84%EC%A0%84" alt="version" /></a>
 <a href="../../LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-lightgrey" alt="license" /></a>
 
 [English](../../README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-Hant.md) · [日本語](README.ja.md) · 한국어 · [Español](README.es.md)
@@ -71,14 +71,14 @@
 
 ## 3단계로 시작하기
 
-1. **설치**: [Releases](https://github.com/wangzan101/Mika/releases/latest)에서 APK를 내려받습니다.
+1. **설치**: [Releases](https://github.com/sxkiss/Mika/releases/latest)에서 APK를 내려받습니다.
 2. **모델 연결**: Settings › Model에서 제공업체를 골라 API 키를 입력하거나, 계정으로 바로 로그인합니다([모델과 로그인](../models.en.md)).
 3. **휴대폰 앱을 조작하게 하려면**: 설정의 "Set up phone control" 마법사를 따라 휴대폰에서 무선 디버깅을 한 번 페어링합니다([설정 가이드](../setup-guide.en.md)). 채팅, 웹, 파일 작업만 할 거라면 이 단계는 건너뛰어도 됩니다.
 
 이제 말을 걸어 보세요: "내일 아침 9시 40분이랑 10시에 알람 맞춰 줘", "매일 아침 8시에 날씨 보고 비 올 때만 알려 줘".
 
 > 💡 컴퓨터가 옆에 있나요? 이 문장을 컴퓨터의 AI 에이전트에게 보내면 대신 설치해 줍니다:<br/>
-> `https://github.com/wangzan101/Mika/blob/main/docs/install-with-agent.en.md 의 단계에 따라, USB로 연결된 Android 휴대폰에 Mika를 설치해 줘.`
+> `https://github.com/sxkiss/Mika/blob/main/docs/install-with-agent.en.md 의 단계에 따라, USB로 연결된 Android 휴대폰에 Mika를 설치해 줘.`
 
 ## 할 수 있는 일
 
@@ -121,7 +121,7 @@ API 키 없이 ChatGPT(Plus / Pro), xAI / Grok, OpenRouter 계정으로 로그�
 | 휴대폰 앱 조작 | Android 12 이상. **Android 14 이상 권장**(백그라운드 화면이 자체 포커스를 가져서 메인 화면에서 타이핑하는 데 방해가 되지 않습니다) |
 | Linux 샌드박스 | arm64 기기 |
 
-내 휴대폰에서 될지 모르겠다면 Settings › Recovery & repair › **Compatibility self-check**를 실행해 보세요. 1분 정도면 12개 항목을 확인하고, 결과를 한 번에 [저희에게 보낼 수 있습니다](https://github.com/wangzan101/Mika/issues/new?template=device-report.yml).
+내 휴대폰에서 될지 모르겠다면 Settings › Recovery & repair › **Compatibility self-check**를 실행해 보세요. 1분 정도면 12개 항목을 확인하고, 결과를 한 번에 [저희에게 보낼 수 있습니다](https://github.com/sxkiss/Mika/issues/new?template=device-report.yml).
 
 ## 개인정보와 안전
 
@@ -142,7 +142,7 @@ API 키 없이 ChatGPT(Plus / Pro), xAI / Grok, OpenRouter 계정으로 로그�
 
 **앱이 한국어를 지원하나요?** 앱 화면은 현재 영어, 중국어 간체, 중국어 번체로 제공되며 시스템 언어를 따라갑니다(Settings › Language에서도 바꿀 수 있습니다). 한국어 화면은 아직 없지만 Mika에게는 한국어로 말해도 됩니다. 내장된 앱·사이트 지식은 중국어로 쓰여 있지만 모델이 문제없이 읽습니다.
 
-**업데이트는 어디서 받나요?** 이 저장소의 [Releases](https://github.com/wangzan101/Mika/releases)에서만 배포합니다. 앱의 About › Check for updates에서도 바로 업데이트할 수 있습니다.
+**업데이트는 어디서 받나요?** 이 저장소의 [Releases](https://github.com/sxkiss/Mika/releases)에서만 배포합니다. 앱의 About › Check for updates에서도 바로 업데이트할 수 있습니다.
 
 더 많은 질문과 답은 [FAQ](../faq.en.md)에 있습니다.
 
@@ -153,15 +153,15 @@ API 키 없이 ChatGPT(Plus / Pro), xAI / Grok, OpenRouter 계정으로 로그�
 - **문서**: 모든 문서와 추천 읽기 순서는 [문서 목록](../README.en.md)에 있습니다
 - **커뮤니티**: [X 그룹 채팅](https://x.com/i/chat/group_join/g2116500883139862983/xP74Qyff3X)에 참여하세요. WeChat으로 작성자에게 연락하려면 앱의 About › Contact the author에 있는 QR 코드를 스캔하세요(친구 신청에 "Mika"라고 적어 주세요)
 - **작성자 팔로우**: X [@wangzan101](https://x.com/wangzan101)
-- **문제 신고**: [Issue 열기](https://github.com/wangzan101/Mika/issues/new/choose). 앱의 About › Send feedback에서 진단 정보를 첨부할 수 있습니다
+- **문제 신고**: [Issue 열기](https://github.com/sxkiss/Mika/issues/new/choose). 앱의 About › Send feedback에서 진단 정보를 첨부할 수 있습니다
 - **기여하기**: 앱이나 사이트의 사용 지식을 보태 주세요(일반 텍스트라 코드를 몰라도 됩니다). 코드 기여도 환영합니다. [기여 가이드](../../.github/CONTRIBUTING.md)를 보세요
 
 ## Star History
 
-<a href="https://star-history.com/#wangzan101/Mika&Date">
+<a href="https://star-history.com/#sxkiss/Mika&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=wangzan101/Mika&type=Date&theme=dark&v=20261101-0434" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=wangzan101/Mika&type=Date&v=20261101-0434" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=sxkiss/Mika&type=Date&theme=dark&v=20261101-0434" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=sxkiss/Mika&type=Date&v=20261101-0434" width="600" />
   </picture>
 </a>
 
@@ -169,8 +169,8 @@ API 키 없이 ChatGPT(Plus / Pro), xAI / Grok, OpenRouter 계정으로 로그�
 
 Mika에 함께해 주신 모든 분께 감사드립니다:
 
-<a href="https://github.com/wangzan101/Mika/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=wangzan101/Mika&max=100&columns=12" alt="Contributors" />
+<a href="https://github.com/sxkiss/Mika/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=sxkiss/Mika&max=100&columns=12" alt="Contributors" />
 </a>
 
 ## 라이선스

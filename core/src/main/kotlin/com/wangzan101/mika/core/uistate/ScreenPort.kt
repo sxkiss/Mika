@@ -51,6 +51,13 @@ data class UiElement(
     val placeholder: String? = null,
     val searchField: Boolean = false,
     val states: Set<String> = emptySet(),
+    /**
+     * 节点自己报出的文字([name] 常常只是它的一部分:名字取不到时用子节点文字拼,或换成内容描述)。
+     * 计算器一类控件把符号画在自定义 View 上、只给内容描述「加」「清除」时,[name] 里就没有「+」,这里留着原文给模型对照。
+     */
+    val text: String? = null,
+    /** 节点的内容描述(无障碍朗读用的名字);和 [text] 同时存在时 [name] 取 [text]。 */
+    val description: String? = null,
 ) {
     /** 无名字且不可交互的节点对模型没有信息量。 */
     val meaningful: Boolean get() = name.isNotBlank() || clickable || editable || scrollable

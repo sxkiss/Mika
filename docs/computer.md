@@ -4,7 +4,7 @@
 
 电脑上的 AI 工具（或者你自己在终端里）可以把一件事交给手机上的 Mika，查进度、回答追问，拿回结果。电脑说「要办成什么」，怎么做由手机上的 Mika 决定。这一页帮你选入口、选连法，然后指向具体的步骤。
 
-手机端的前提：装好 APK（[Releases](https://github.com/wangzan101/Mika/releases/latest)）、打开过一次 Mika、配好模型。只让 Mika 聊天、上网、处理文件时，安卓 11 就行；要它操作手机 App，还要按[设置指南](setup-guide.md)完成手机操作设置（安卓 12+）。
+手机端的前提：装好 APK（[Releases](https://github.com/sxkiss/Mika/releases/latest)）、打开过一次 Mika、配好模型。只让 Mika 聊天、上网、处理文件时，安卓 11 就行；要它操作手机 App，还要按[设置指南](setup-guide.md)完成手机操作设置（安卓 12+）。
 
 ## 第一步：选入口（CLI + Skill 或 MCP）
 

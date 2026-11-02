@@ -10,7 +10,7 @@ class ReleasesTest {
         {
           "tag_name": "v0.2.0",
           "name": "Mika 0.2.0",
-          "html_url": "https://github.com/wangzan101/Mika/releases/tag/v0.2.0",
+          "html_url": "https://github.com/sxkiss/Mika/releases/tag/v0.2.0",
           "published_at": "2026-11-05T08:30:00Z",
           "prerelease": false,
           "body": "### 新增\r\n- 附件面板\r\n",
@@ -27,7 +27,7 @@ class ReleasesTest {
         assertEquals("0.2.0", r.version)
         assertEquals("Mika 0.2.0", r.name)
         assertEquals("2026-11-05", r.date)
-        assertEquals("https://github.com/wangzan101/Mika/releases/tag/v0.2.0", r.pageUrl)
+        assertEquals("https://github.com/sxkiss/Mika/releases/tag/v0.2.0", r.pageUrl)
         assertEquals("https://github.com/x/mika-0.2.0.apk", r.apkUrl)
         assertEquals(r.apkUrl, r.downloadUrl)
         assertEquals(12345L, r.apkSize)
@@ -37,7 +37,7 @@ class ReleasesTest {
 
     @Test
     fun gitHubReleaseWithoutApkOrBody() {
-        val r = Releases.fromGitHub("""{"tag_name":"0.3.0","name":"","body":null,"html_url":"https://github.com/wangzan101/Mika/releases/tag/0.3.0","assets":[]}""")
+        val r = Releases.fromGitHub("""{"tag_name":"0.3.0","name":"","body":null,"html_url":"https://github.com/sxkiss/Mika/releases/tag/0.3.0","assets":[]}""")
         assertEquals("0.3.0", r.version)
         assertEquals("0.3.0", r.name)
         assertEquals("", r.notes)

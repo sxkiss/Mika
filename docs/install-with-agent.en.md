@@ -9,7 +9,7 @@ This guide starts with the phone APK. If the phone is already set up and you onl
 If you are the user: connect the phone to the computer with a USB cable, turn on USB debugging on the phone (in Developer options, don't change switches this document doesn't mention: some can erase the phone), and send this to the AI agent on your computer:
 
 ```
-Follow https://github.com/wangzan101/Mika/blob/main/docs/install-with-agent.en.md to install Mika on the Android phone connected over USB.
+Follow https://github.com/sxkiss/Mika/blob/main/docs/install-with-agent.en.md to install Mika on the Android phone connected over USB.
 ```
 
 If you are the AI agent: read the "Rules" first. Start at step 1 when phone installation and setup are needed; for computer access only, use the entry points above.
@@ -74,18 +74,18 @@ adb shell getprop ro.product.cpu.abi
 Ask the GitHub API for the latest release, pick the asset named like `Mika-v*.apk`, and download its `browser_download_url`:
 
 ```
-URL=$(curl -fsSL https://api.github.com/repos/wangzan101/Mika/releases/latest \
+URL=$(curl -fsSL https://api.github.com/repos/sxkiss/Mika/releases/latest \
   | grep -o '"browser_download_url": *"[^"]*/Mika-v[^"]*\.apk"' \
   | sed 's/.*"\(https[^"]*\)"/\1/' | head -n 1)
 echo "$URL"
 curl -fL -o Mika.apk "$URL"
 ```
 
-Success: `$URL` looks like `https://github.com/wangzan101/Mika/releases/download/v0.1.N/Mika-v0.1.N.apk`, `curl` reports no error, and `Mika.apk` is in the current folder.
+Success: `$URL` looks like `https://github.com/sxkiss/Mika/releases/download/v0.1.N/Mika-v0.1.N.apk`, `curl` reports no error, and `Mika.apk` is in the current folder.
 
 If jq is available, parsing the JSON with it is more robust; the idea is the same: take the entry in `assets` whose name matches `Mika-v*.apk`.
 
-If GitHub cannot be reached: ask the user to open [Releases](https://github.com/wangzan101/Mika/releases/latest) in a browser, download the APK by hand and tell you where it was saved, then continue from step 3.
+If GitHub cannot be reached: ask the user to open [Releases](https://github.com/sxkiss/Mika/releases/latest) in a browser, download the APK by hand and tell you where it was saved, then continue from step 3.
 
 ## Step 3: Install
 
@@ -311,7 +311,7 @@ Tell the user:
 | The install is blocked | Ask the user to check the phone for a confirmation prompt, and to turn on a switch like "Install via USB" in Developer options if there is one. For the different-signature error see step 3; uninstalling is the user's call. |
 | Accessibility turns itself off again | Redo step 5. Once wireless debugging is paired, Mika turns it back on by itself (on by default in Settings › Recovery & repair). |
 | The phone helper is not running after a restart | With A: connect to Wi-Fi and wait a moment; Mika recovers by itself. If not, tap Pair again in Settings › Phone control. With only B: run the command from step 7 B again from the computer, or set up A. |
-| GitHub cannot be reached | Ask the user to open [Releases](https://github.com/wangzan101/Mika/releases/latest) in a browser and download the APK by hand, then run `adb install -r <path to the APK>`. |
+| GitHub cannot be reached | Ask the user to open [Releases](https://github.com/sxkiss/Mika/releases/latest) in a browser and download the APK by hand, then run `adb install -r <path to the APK>`. |
 | Wireless debugging won't turn on | The phone must be on Wi-Fi, and the user must allow wireless debugging on this network in the prompt. If it still won't, use B. |
 | The MCP client can't reach Mika over USB (step 10) | Run `adb forward tcp:8765 tcp:8765` again (needed after every replug). After a phone restart, run the step 10 command that turns it on again and update the token. |
 | The manual MCP forward fails with `cannot bind`, or the reply isn't from Mika (step 10) | Port 8765 is taken on the computer. Forward from another free port, e.g. `adb forward tcp:18765 tcp:8765`, and use `http://127.0.0.1:18765/mcp` in the config; nothing changes on the phone. |

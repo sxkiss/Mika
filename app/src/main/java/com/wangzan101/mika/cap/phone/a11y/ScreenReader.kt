@@ -108,6 +108,10 @@ internal object ScreenReader {
                             // 安卓的搜索框控件(SearchView 里的输入框)按类名认
                             searchField = n.isEditable && n.className?.toString()?.contains("Search", ignoreCase = true) == true,
                             states = uiStates(n),
+                            // 节点自己的原文与朗读名:[name] 可能来自子节点拼接或提示语,计算器这类控件
+                            // 把「+」「清除」画在自定义 View 上、只给内容描述,原文要单独留着才对得上屏幕
+                            text = n.text?.toString()?.trim()?.takeUnless { n.isPassword || it.isEmpty() },
+                            description = n.contentDescription?.toString()?.trim()?.takeUnless { n.isPassword || it.isEmpty() },
                         )
                         val locator = ElementLocator(role, label, rid, rect.centerX(), rect.centerY(), lastLabel, element.hint, inList)
                         entries += NodeEntry(element, locator, n)

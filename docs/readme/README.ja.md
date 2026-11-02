@@ -9,11 +9,11 @@
 
 作業は見えないバックグラウンド画面で進むので、その間もスマホはいつもどおり使えます。
 
-<a href="https://github.com/wangzan101/Mika/releases/latest"><img src="https://img.shields.io/badge/APK%20%E3%82%92%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89-Android%2011%2B-2ea043?style=for-the-badge&logo=android&logoColor=white" alt="APK をダウンロード" /></a>
+<a href="https://github.com/sxkiss/Mika/releases/latest"><img src="https://img.shields.io/badge/APK%20%E3%82%92%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89-Android%2011%2B-2ea043?style=for-the-badge&logo=android&logoColor=white" alt="APK をダウンロード" /></a>
 
-<a href="https://github.com/wangzan101/Mika/stargazers"><img src="https://img.shields.io/github/stars/wangzan101/Mika?style=flat&logo=github&label=Star&color=1f6feb" alt="stars" /></a>
-<a href="https://github.com/wangzan101/Mika/releases"><img src="https://img.shields.io/github/downloads/wangzan101/Mika/total?label=%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89&color=2ea043" alt="downloads" /></a>
-<a href="https://github.com/wangzan101/Mika/releases/latest"><img src="https://img.shields.io/github/v/release/wangzan101/Mika?include_prereleases&label=%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3" alt="version" /></a>
+<a href="https://github.com/sxkiss/Mika/stargazers"><img src="https://img.shields.io/github/stars/sxkiss/Mika?style=flat&logo=github&label=Star&color=1f6feb" alt="stars" /></a>
+<a href="https://github.com/sxkiss/Mika/releases"><img src="https://img.shields.io/github/downloads/sxkiss/Mika/total?label=%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89&color=2ea043" alt="downloads" /></a>
+<a href="https://github.com/sxkiss/Mika/releases/latest"><img src="https://img.shields.io/github/v/release/sxkiss/Mika?include_prereleases&label=%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3" alt="version" /></a>
 <a href="../../LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-lightgrey" alt="license" /></a>
 
 [English](../../README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-Hant.md) · 日本語 · [한국어](README.ko.md) · [Español](README.es.md)
@@ -71,14 +71,14 @@
 
 ## 3 ステップで始める
 
-1. **インストール**：[Releases](https://github.com/wangzan101/Mika/releases/latest) から APK をダウンロード。
+1. **インストール**：[Releases](https://github.com/sxkiss/Mika/releases/latest) から APK をダウンロード。
 2. **モデルをつなぐ**：Settings › Model でプロバイダーを選んで API キーを入力するか、アカウントでログイン（[モデルとログイン](../models.en.md)）。
 3. **スマホのアプリを操作させたいとき**：設定の「Set up phone control」ウィザードに沿って、ワイヤレスデバッグを一度だけペアリング（[セットアップガイド](../setup-guide.en.md)）。チャット、ウェブ、ファイル処理だけならこの手順は不要です。
 
 あとは話しかけるだけ：「明日の朝 9:40 と 10:00 にアラームをセットして」「毎朝 8 時に天気を見て、雨のときだけ教えて」。
 
 > 💡 パソコンが手元にあるなら、この一文をパソコンの AI エージェントに送れば、代わりにセットアップしてくれます：<br/>
-> `https://github.com/wangzan101/Mika/blob/main/docs/install-with-agent.en.md の手順に従って、USB で接続している Android スマホに Mika をインストールしてください。`
+> `https://github.com/sxkiss/Mika/blob/main/docs/install-with-agent.en.md の手順に従って、USB で接続している Android スマホに Mika をインストールしてください。`
 
 ## できること
 
@@ -121,7 +121,7 @@ API キーなしで、ChatGPT（Plus / Pro）、xAI / Grok、OpenRouter のア�
 | スマホのアプリ操作 | Android 12 以降。**Android 14 以降を推奨**（バックグラウンド画面が独自のフォーカスを持つので、メイン画面での入力を邪魔しません） |
 | Linux サンドボックス | arm64 端末 |
 
-自分のスマホで動くか不安なら、Settings › Recovery & repair › **Compatibility self-check** を実行してください。1 分ほどで 12 項目を確認でき、結果はワンタップで[私たちに送れます](https://github.com/wangzan101/Mika/issues/new?template=device-report.yml)。
+自分のスマホで動くか不安なら、Settings › Recovery & repair › **Compatibility self-check** を実行してください。1 分ほどで 12 項目を確認でき、結果はワンタップで[私たちに送れます](https://github.com/sxkiss/Mika/issues/new?template=device-report.yml)。
 
 ## プライバシーと安全
 
@@ -142,7 +142,7 @@ API キーなしで、ChatGPT（Plus / Pro）、xAI / Grok、OpenRouter のア�
 
 **アプリは日本語に対応している？** 画面の表示言語は今のところ英語、簡体字中国語、繁体字中国語で、システムの言語に合わせて切り替わります（Settings › Language でも変更可）。日本語の表示はまだありませんが、Mika には日本語で話しかけて大丈夫です。内蔵のアプリ・サイト知識は中国語で書かれていますが、モデルは問題なく読めます。
 
-**アップデートはどこから？** このリポジトリの [Releases](https://github.com/wangzan101/Mika/releases) だけで公開しています。アプリの「About › Check for updates」からもそのまま更新できます。
+**アップデートはどこから？** このリポジトリの [Releases](https://github.com/sxkiss/Mika/releases) だけで公開しています。アプリの「About › Check for updates」からもそのまま更新できます。
 
 ほかの質問と回答は [FAQ](../faq.en.md) にあります。
 
@@ -153,15 +153,15 @@ API キーなしで、ChatGPT（Plus / Pro）、xAI / Grok、OpenRouter のア�
 - **ドキュメント**：すべてのドキュメントとおすすめの読む順番は[ドキュメント一覧](../README.en.md)へ
 - **コミュニティ**：[X のグループチャット](https://x.com/i/chat/group_join/g2116500883139862983/xP74Qyff3X)に参加できます。WeChat で作者に連絡するには、アプリの About › Contact the author にある QR コードを読み取ってください（友達申請に「Mika」と書いてください）
 - **作者をフォロー**：X [@wangzan101](https://x.com/wangzan101)
-- **問題を報告**：[Issue を作成](https://github.com/wangzan101/Mika/issues/new/choose)。アプリの About › Send feedback から診断情報を添えられます
+- **問題を報告**：[Issue を作成](https://github.com/sxkiss/Mika/issues/new/choose)。アプリの About › Send feedback から診断情報を添えられます
 - **貢献する**：アプリやサイトの使い方の知識を書き足す（プレーンテキストで、コードは不要）、またはコードで貢献。[コントリビューションガイド](../../.github/CONTRIBUTING.md)をご覧ください
 
 ## Star History
 
-<a href="https://star-history.com/#wangzan101/Mika&Date">
+<a href="https://star-history.com/#sxkiss/Mika&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=wangzan101/Mika&type=Date&theme=dark&v=20261101-0434" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=wangzan101/Mika&type=Date&v=20261101-0434" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=sxkiss/Mika&type=Date&theme=dark&v=20261101-0434" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=sxkiss/Mika&type=Date&v=20261101-0434" width="600" />
   </picture>
 </a>
 
@@ -169,8 +169,8 @@ API キーなしで、ChatGPT（Plus / Pro）、xAI / Grok、OpenRouter のア�
 
 Mika に関わってくれたすべての方に感謝します：
 
-<a href="https://github.com/wangzan101/Mika/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=wangzan101/Mika&max=100&columns=12" alt="Contributors" />
+<a href="https://github.com/sxkiss/Mika/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=sxkiss/Mika&max=100&columns=12" alt="Contributors" />
 </a>
 
 ## ライセンス

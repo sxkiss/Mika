@@ -108,8 +108,18 @@ class UpdateChecker(
         }
     }
 
-    /** GitHub 上最新的发布;没查到为空。 */
-    internal fun fetchLatest(): ReleaseInfo? = runCatching { Releases.fromGitHub(get(releaseApi)) }.getOrNull()
+    /**
+     * GitHub 上最新的发布;没查到为空。
+     * 新仓库的 release 都是 prerelease 标记,`/releases/latest` 走正式版路由会 404。
+     * 所以只查 releases 列表,按 published_at 排序挑最新一个(列表端点不区分 prerelease)。
+     */
+    internal fun fetchLatest(): ReleaseInfo? = runCatching {
+        val listJson = get("https://api.github.com/repos/sxkiss/Mika/releases?per_page=30")
+        val arr = Json { ignoreUnknownKeys = true }.parseToJsonElement(listJson).jsonArray
+        arr.sortedByDescending { elem ->
+            (elem.jsonObject["published_at"] as? JsonPrimitive)?.content.orEmpty()
+        }.firstOrNull()?.let { Releases.fromGitHub(it.toString()) }
+    }.getOrNull()
 
     private fun get(url: String): String {
         val req = Request.Builder().url(url)

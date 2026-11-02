@@ -9,7 +9,7 @@
 如果你是用户：把手机用数据线连上电脑，在手机上打开 USB 调试（开发者选项里，本文没写到的开关不要动，有的会清除手机数据），然后把这句话发给电脑上的 AI 助手：
 
 ```
-请按 https://github.com/wangzan101/Mika/blob/main/docs/install-with-agent.md 的步骤，帮我把 Mika 安装到通过 USB 连着的安卓手机上。
+请按 https://github.com/sxkiss/Mika/blob/main/docs/install-with-agent.md 的步骤，帮我把 Mika 安装到通过 USB 连着的安卓手机上。
 ```
 
 如果你是 AI 助手：先读完「规则」，需要安装和设置手机时再从第 1 步开始；仅需电脑接入时按上面的入口执行。
@@ -74,18 +74,18 @@ adb shell getprop ro.product.cpu.abi
 从 GitHub 接口取最新版本，选名字形如 `Mika-v*.apk` 的那个文件，用它的 `browser_download_url` 下载：
 
 ```
-URL=$(curl -fsSL https://api.github.com/repos/wangzan101/Mika/releases/latest \
+URL=$(curl -fsSL https://api.github.com/repos/sxkiss/Mika/releases/latest \
   | grep -o '"browser_download_url": *"[^"]*/Mika-v[^"]*\.apk"' \
   | sed 's/.*"\(https[^"]*\)"/\1/' | head -n 1)
 echo "$URL"
 curl -fL -o Mika.apk "$URL"
 ```
 
-成功：`$URL` 形如 `https://github.com/wangzan101/Mika/releases/download/v0.1.N/Mika-v0.1.N.apk`，`curl` 没有报错，当前目录下有下载完的 `Mika.apk`。
+成功：`$URL` 形如 `https://github.com/sxkiss/Mika/releases/download/v0.1.N/Mika-v0.1.N.apk`，`curl` 没有报错，当前目录下有下载完的 `Mika.apk`。
 
 电脑上有 jq 的话，用它解析 JSON 更稳；做法一样，取 `assets` 里名字匹配 `Mika-v*.apk` 的那一项。
 
-连不上 GitHub：请用户在浏览器里打开 [Releases](https://github.com/wangzan101/Mika/releases/latest)，手动下载 APK，告诉你文件存在哪，再从第 3 步继续。
+连不上 GitHub：请用户在浏览器里打开 [Releases](https://github.com/sxkiss/Mika/releases/latest)，手动下载 APK，告诉你文件存在哪，再从第 3 步继续。
 
 ## 第 3 步：安装
 
@@ -311,7 +311,7 @@ ADB 操作始终沿用第 1 步选定的手机：CLI / Skill 命令传同一个 
 | 安装被拦下 | 请用户看手机上有没有确认框；在开发者选项里打开「通过 USB 安装」之类的开关（如果有）。签名不同的报错见第 3 步，卸载由用户决定。 |
 | 无障碍过一会儿又关了 | 再做一次第 5 步。配对过无线调试的话，Mika 会自己把它重新打开（设置 › 恢复与修复 里默认开着）。 |
 | 重启后手机助手没在运行 | 做过 A：连上 Wi-Fi 等一会儿，Mika 会自己恢复；不行就在 设置 › 手机操作 里点「重新配对」。只做过 B：再连电脑运行一次第 7 步 B 的命令，或者改做 A。 |
-| 连不上 GitHub | 请用户在浏览器里打开 [Releases](https://github.com/wangzan101/Mika/releases/latest) 手动下载 APK，然后 `adb install -r <APK 文件路径>`。 |
+| 连不上 GitHub | 请用户在浏览器里打开 [Releases](https://github.com/sxkiss/Mika/releases/latest) 手动下载 APK，然后 `adb install -r <APK 文件路径>`。 |
 | 无线调试打不开 | 手机要连着 Wi-Fi；在弹框里允许在此网络上使用无线调试。实在不行就用 B。 |
 | MCP 客户端经 USB 连不上 Mika（第 10 步） | 再运行一次 `adb forward tcp:8765 tcp:8765`（每次拔插数据线后都要）。手机重启过的话，再运行一次第 10 步打开的那条命令，并换上新令牌。 |
 | MCP 手工转发报 `cannot bind`，或返回的不是 Mika 的内容（第 10 步） | 电脑上 8765 端口被别的程序占了。换一个空闲端口转发，比如 `adb forward tcp:18765 tcp:8765`，配置里的地址改成 `http://127.0.0.1:18765/mcp`；手机那边不用改。 |

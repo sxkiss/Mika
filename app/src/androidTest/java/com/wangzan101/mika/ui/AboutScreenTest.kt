@@ -39,7 +39,7 @@ class AboutScreenTest {
 
     private val r020 = ReleaseInfo(
         "0.2.0", "Mika 0.2.0", "### 新增\n- 附件面板", "2026-11-05",
-        "https://github.com/wangzan101/Mika/releases/tag/v0.2.0", "https://github.com/x/mika-0.2.0.apk",
+        "https://github.com/sxkiss/Mika/releases/tag/v0.2.0", "https://github.com/x/mika-0.2.0.apk",
     )
 
     private class Calls {

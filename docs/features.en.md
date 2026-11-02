@@ -85,7 +85,7 @@ Computer AI tools can use **CLI + Skill or MCP** to hand Mika tasks, check progr
 Connect the phone to your computer with a USB cable, turn on USB debugging on the phone (don't change other switches in Developer options unless the agent asks you to: some can erase the phone), and send this sentence to an AI agent on the computer that can run commands:
 
 ```
-Follow https://github.com/wangzan101/Mika/blob/main/docs/install-with-agent.en.md to install Mika on the Android phone connected over USB.
+Follow https://github.com/sxkiss/Mika/blob/main/docs/install-with-agent.en.md to install Mika on the Android phone connected over USB.
 ```
 
 It checks the phone, downloads and installs Mika, turns on the permissions it needs, and stops to tell you whenever something needs a tap on the phone. You enter your API key in Mika yourself; it never goes through the agent. If you also ask for computer access, the agent configures the access method you choose. The steps are in [Installing Mika with an AI agent](install-with-agent.en.md).

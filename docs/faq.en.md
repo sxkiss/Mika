@@ -13,10 +13,10 @@ No. Pairing wireless debugging is only needed to operate phone apps. Chat, the b
 Mika operates apps on a separate background screen. Phone control is available from Android 12, but background work can affect main-screen focus on Android 12–13. From Android 14 the background screen has its own focus and does not interfere with your typing on the main screen, so it is recommended. Web, sandbox and chat also work on Android 11.
 
 **Not sure whether your phone works?**
-Run Settings › Recovery & repair › Compatibility self-check. It takes about a minute, and you can send the result to us with one tap as a [device report](https://github.com/wangzan101/Mika/issues/new?template=device-report.yml).
+Run Settings › Recovery & repair › Compatibility self-check. It takes about a minute, and you can send the result to us with one tap as a [device report](https://github.com/sxkiss/Mika/issues/new?template=device-report.yml).
 
 **Where do APK updates come from?**
-Only from this repository's [GitHub Releases](https://github.com/wangzan101/Mika/releases). Each release's notes list what changed. In the app, About › Check for updates can also download and install it directly.
+Only from this repository's [GitHub Releases](https://github.com/sxkiss/Mika/releases). Each release's notes list what changed. In the app, About › Check for updates can also download and install it directly.
 
 ## Phone control
 

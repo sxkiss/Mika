@@ -8,11 +8,11 @@
 
 It works on a hidden background screen, so you can keep using your phone.
 
-<a href="https://github.com/wangzan101/Mika/releases/latest"><img src="https://img.shields.io/badge/Download%20APK-Android%2011%2B-2ea043?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" /></a>
+<a href="https://github.com/sxkiss/Mika/releases/latest"><img src="https://img.shields.io/badge/Download%20APK-Android%2011%2B-2ea043?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" /></a>
 
-<a href="https://github.com/wangzan101/Mika/stargazers"><img src="https://img.shields.io/github/stars/wangzan101/Mika?style=flat&logo=github&label=Star&color=1f6feb" alt="stars" /></a>
-<a href="https://github.com/wangzan101/Mika/releases"><img src="https://img.shields.io/github/downloads/wangzan101/Mika/total?label=downloads&color=2ea043" alt="downloads" /></a>
-<a href="https://github.com/wangzan101/Mika/releases/latest"><img src="https://img.shields.io/github/v/release/wangzan101/Mika?include_prereleases&label=version" alt="version" /></a>
+<a href="https://github.com/sxkiss/Mika/stargazers"><img src="https://img.shields.io/github/stars/sxkiss/Mika?style=flat&logo=github&label=Star&color=1f6feb" alt="stars" /></a>
+<a href="https://github.com/sxkiss/Mika/releases"><img src="https://img.shields.io/github/downloads/sxkiss/Mika/total?label=downloads&color=2ea043" alt="downloads" /></a>
+<a href="https://github.com/sxkiss/Mika/releases/latest"><img src="https://img.shields.io/github/v/release/sxkiss/Mika?include_prereleases&label=version" alt="version" /></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-lightgrey" alt="license" /></a>
 
 English · [简体中文](docs/readme/README.zh-CN.md) · [繁體中文](docs/readme/README.zh-Hant.md) · [日本語](docs/readme/README.ja.md) · [한국어](docs/readme/README.ko.md) · [Español](docs/readme/README.es.md)
@@ -68,14 +68,14 @@ English · [简体中文](docs/readme/README.zh-CN.md) · [繁體中文](docs/re
 
 ## Get started in three steps
 
-1. **Install**: download the APK from [Releases](https://github.com/wangzan101/Mika/releases/latest).
+1. **Install**: download the APK from [Releases](https://github.com/sxkiss/Mika/releases/latest).
 2. **Connect a model**: in Settings › Model, pick a provider and enter an API key, or just sign in with an account ([models and sign-in](docs/models.en.md)).
 3. **To operate phone apps**: follow the "Set up phone control" wizard in Settings and pair wireless debugging on the phone once ([setup guide](docs/setup-guide.en.md)). Skip this if you only want chat, web and files.
 
 Then try saying: "Set alarms for 9:40 and 10:00 tomorrow morning" or "Check the weather at 8 every morning and tell me only if it will rain".
 
 > 💡 Have a computer handy? Send this to the AI agent on it and it will set everything up for you:<br/>
-> `Follow https://github.com/wangzan101/Mika/blob/main/docs/install-with-agent.en.md to install Mika on the Android phone connected over USB.`
+> `Follow https://github.com/sxkiss/Mika/blob/main/docs/install-with-agent.en.md to install Mika on the Android phone connected over USB.`
 
 ## What it can do
 
@@ -130,7 +130,7 @@ You can also skip the key and sign in with a ChatGPT (Plus / Pro), xAI / Grok or
 | Operating phone apps | Android 12 or later; **Android 14+ recommended** (the background screen has its own focus, so it doesn't get in the way of your typing on the main screen) |
 | Linux sandbox | arm64 devices |
 
-Not sure your phone is up to it? Run Settings › Recovery & repair › **Compatibility self-check**: 12 checks in about a minute, and you can [send us the results](https://github.com/wangzan101/Mika/issues/new?template=device-report.yml) in one tap.
+Not sure your phone is up to it? Run Settings › Recovery & repair › **Compatibility self-check**: 12 checks in about a minute, and you can [send us the results](https://github.com/sxkiss/Mika/issues/new?template=device-report.yml) in one tap.
 
 ## Privacy & safety
 
@@ -151,7 +151,7 @@ Not sure your phone is up to it? Run Settings › Recovery & repair › **Compat
 
 **Is the app in English?** Yes. The app UI comes in English, Simplified Chinese and Traditional Chinese, follows your system language, and can be switched in Settings › Language. The built-in app and website knowledge is written in Chinese, but that doesn't limit you: the model reads it fine, and you can talk to Mika in English.
 
-**Where do updates come from?** Only from this repository's [Releases](https://github.com/wangzan101/Mika/releases); you can also upgrade in the app from About › Check for updates.
+**Where do updates come from?** Only from this repository's [Releases](https://github.com/sxkiss/Mika/releases); you can also upgrade in the app from About › Check for updates.
 
 More answers are in the [FAQ](docs/faq.en.md).
 
@@ -162,15 +162,15 @@ More answers are in the [FAQ](docs/faq.en.md).
 - **Docs**: all docs and a suggested reading order are in the [docs index](docs/README.en.md)
 - **Community**: join the [X group chat](https://x.com/i/chat/group_join/g2116500883139862983/xP74Qyff3X); to reach the author on WeChat, scan the QR code in the app under About › Contact the author (mention Mika in your request)
 - **Follow the author**: X [@wangzan101](https://x.com/wangzan101)
-- **Report a problem**: [open an issue](https://github.com/wangzan101/Mika/issues/new/choose); About › Send feedback in the app can attach diagnostics
+- **Report a problem**: [open an issue](https://github.com/sxkiss/Mika/issues/new/choose); About › Send feedback in the app can attach diagnostics
 - **Contribute**: add usage knowledge for an app or website (plain text, no code needed), or contribute code; see the [contributing guide](.github/CONTRIBUTING.md)
 
 ## Star History
 
-<a href="https://star-history.com/#wangzan101/Mika&Date">
+<a href="https://star-history.com/#sxkiss/Mika&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=wangzan101/Mika&type=Date&theme=dark&v=20261101-0434" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=wangzan101/Mika&type=Date&v=20261101-0434" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=sxkiss/Mika&type=Date&theme=dark&v=20261101-0434" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=sxkiss/Mika&type=Date&v=20261101-0434" width="600" />
   </picture>
 </a>
 
@@ -178,8 +178,8 @@ More answers are in the [FAQ](docs/faq.en.md).
 
 Thanks to everyone who has helped build Mika:
 
-<a href="https://github.com/wangzan101/Mika/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=wangzan101/Mika&max=100&columns=12" alt="Contributors" />
+<a href="https://github.com/sxkiss/Mika/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=sxkiss/Mika&max=100&columns=12" alt="Contributors" />
 </a>
 
 ## License

@@ -78,6 +78,17 @@ class McpPhoneTools(
             readOnly = false
         ),
         Tool(
+            "phone_clear",
+            "Clear the text in an input field. Give ref, or x/y (0-999) to clear the box at that point; " +
+                "with neither, clears the field that currently holds input focus.",
+            schema(emptyList()) {
+                putJsonObject("ref") { put("type", "string"); put("description", "Element ref from phone_observe") }
+                putJsonObject("x") { put("type", "integer"); put("description", "X coordinate 0-999 of the input box") }
+                putJsonObject("y") { put("type", "integer"); put("description", "Y coordinate 0-999 of the input box") }
+            },
+            readOnly = false
+        ),
+        Tool(
             "phone_scroll",
             "Scroll the page or list up/down.",
             schema(listOf("direction")) {
@@ -139,6 +150,7 @@ class McpPhoneTools(
             "phone_screenshot" -> handleScreenshot()
             "phone_tap" -> handleTap(args)
             "phone_type" -> handleType(args)
+            "phone_clear" -> handleClear(args)
             "phone_scroll" -> handleScroll(args)
             "phone_back" -> handleBack()
             "phone_list_apps" -> handleListApps()
@@ -171,6 +183,10 @@ class McpPhoneTools(
                         put("ref", elem.ref)
                         put("role", elem.role)
                         put("name", if (verbose) elem.name else elem.name.take(50))
+                        // 屏幕上的原文与朗读名:自定义绘制的控件(计算器的「+」「清除」)只给内容描述,
+                        // name 是「加」「清除」这类词,原文在这里才对得上屏幕上画的东西
+                        elem.text?.let { put("text", it.take(80)) }
+                        elem.description?.let { put("description", it.take(80)) }
                         putJsonArray("bounds") { elem.bounds.forEach { add(it) } }
                         put("clickable", elem.clickable)
                         put("editable", elem.editable)
@@ -208,6 +224,20 @@ class McpPhoneTools(
         val ref = args["ref"]?.jsonPrimitive?.contentOrNull
         val result = runCatching { screen.typeText(ref, if (ref != null) lastSnapshotId else null, text) }
             .getOrElse { return errorJson(it.message ?: "type failed") }
+        return resultJson(result)
+    }
+
+    private suspend fun handleClear(args: JsonObject): String {
+        val ref = args["ref"]?.jsonPrimitive?.contentOrNull
+        val x = args["x"]?.jsonPrimitive?.intOrNull
+        val y = args["y"]?.jsonPrimitive?.intOrNull
+        val result = runCatching {
+            when {
+                ref != null -> screen.clearText(ref, lastSnapshotId)
+                x != null && y != null -> screen.clearAt(x, y)
+                else -> screen.clearText(null, null)
+            }
+        }.getOrElse { return errorJson(it.message ?: "clear failed") }
         return resultJson(result)
     }
 

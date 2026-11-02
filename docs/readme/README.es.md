@@ -9,11 +9,11 @@
 
 Trabaja en una pantalla en segundo plano que no ves, así que puedes seguir usando el móvil con normalidad.
 
-<a href="https://github.com/wangzan101/Mika/releases/latest"><img src="https://img.shields.io/badge/Descargar%20APK-Android%2011%2B-2ea043?style=for-the-badge&logo=android&logoColor=white" alt="Descargar APK" /></a>
+<a href="https://github.com/sxkiss/Mika/releases/latest"><img src="https://img.shields.io/badge/Descargar%20APK-Android%2011%2B-2ea043?style=for-the-badge&logo=android&logoColor=white" alt="Descargar APK" /></a>
 
-<a href="https://github.com/wangzan101/Mika/stargazers"><img src="https://img.shields.io/github/stars/wangzan101/Mika?style=flat&logo=github&label=Star&color=1f6feb" alt="stars" /></a>
-<a href="https://github.com/wangzan101/Mika/releases"><img src="https://img.shields.io/github/downloads/wangzan101/Mika/total?label=descargas&color=2ea043" alt="downloads" /></a>
-<a href="https://github.com/wangzan101/Mika/releases/latest"><img src="https://img.shields.io/github/v/release/wangzan101/Mika?include_prereleases&label=versi%C3%B3n" alt="version" /></a>
+<a href="https://github.com/sxkiss/Mika/stargazers"><img src="https://img.shields.io/github/stars/sxkiss/Mika?style=flat&logo=github&label=Star&color=1f6feb" alt="stars" /></a>
+<a href="https://github.com/sxkiss/Mika/releases"><img src="https://img.shields.io/github/downloads/sxkiss/Mika/total?label=descargas&color=2ea043" alt="downloads" /></a>
+<a href="https://github.com/sxkiss/Mika/releases/latest"><img src="https://img.shields.io/github/v/release/sxkiss/Mika?include_prereleases&label=versi%C3%B3n" alt="version" /></a>
 <a href="../../LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-lightgrey" alt="license" /></a>
 
 [English](../../README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-Hant.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · Español
@@ -71,14 +71,14 @@ Trabaja en una pantalla en segundo plano que no ves, así que puedes seguir usan
 
 ## Empieza en tres pasos
 
-1. **Instálalo**: descarga el APK desde [Releases](https://github.com/wangzan101/Mika/releases/latest).
+1. **Instálalo**: descarga el APK desde [Releases](https://github.com/sxkiss/Mika/releases/latest).
 2. **Conecta un modelo**: en Settings › Model, elige un proveedor e introduce una clave de API, o simplemente inicia sesión con una cuenta ([modelos e inicio de sesión](../models.en.md)).
 3. **Para que maneje apps del móvil**: sigue el asistente «Set up phone control» de los ajustes y empareja la depuración inalámbrica una sola vez ([guía de configuración](../setup-guide.en.md)). Si solo quieres chatear, navegar y trabajar con archivos, puedes saltarte este paso.
 
 Después, prueba a decirle: «Pon alarmas mañana a las 9:40 y a las 10:00» o «Mira el tiempo cada mañana a las 8 y avísame solo si va a llover».
 
 > 💡 ¿Tienes un ordenador a mano? Envía esta frase al agente de IA de tu ordenador y lo instalará todo por ti:<br/>
-> `Sigue los pasos de https://github.com/wangzan101/Mika/blob/main/docs/install-with-agent.en.md para instalar Mika en el móvil Android conectado por USB.`
+> `Sigue los pasos de https://github.com/sxkiss/Mika/blob/main/docs/install-with-agent.en.md para instalar Mika en el móvil Android conectado por USB.`
 
 ## Qué puede hacer
 
@@ -121,7 +121,7 @@ También puedes prescindir de la clave e iniciar sesión con una cuenta de ChatG
 | Manejar apps del móvil | Android 12 o posterior; **se recomienda Android 14+** (la pantalla en segundo plano tiene su propio foco, así que no interfiere cuando escribes en la pantalla principal) |
 | Sandbox de Linux | Dispositivos arm64 |
 
-¿No sabes si tu móvil sirve? Ejecuta Settings › Recovery & repair › **Compatibility self-check**: 12 comprobaciones en un minuto, y puedes [enviarnos el resultado](https://github.com/wangzan101/Mika/issues/new?template=device-report.yml) con un toque.
+¿No sabes si tu móvil sirve? Ejecuta Settings › Recovery & repair › **Compatibility self-check**: 12 comprobaciones en un minuto, y puedes [enviarnos el resultado](https://github.com/sxkiss/Mika/issues/new?template=device-report.yml) con un toque.
 
 ## Privacidad y seguridad
 
@@ -142,7 +142,7 @@ También puedes prescindir de la clave e iniciar sesión con una cuenta de ChatG
 
 **¿La app está en español?** Por ahora la interfaz está en inglés, chino simplificado y chino tradicional, sigue el idioma del sistema y se puede cambiar en Settings › Language. Todavía no hay interfaz en español, pero puedes hablarle a Mika en español sin problema. El conocimiento integrado sobre apps y sitios web está escrito en chino, y el modelo lo entiende sin dificultad.
 
-**¿De dónde vienen las actualizaciones?** Solo de los [Releases](https://github.com/wangzan101/Mika/releases) de este repositorio; también puedes actualizar desde la app en About › Check for updates.
+**¿De dónde vienen las actualizaciones?** Solo de los [Releases](https://github.com/sxkiss/Mika/releases) de este repositorio; también puedes actualizar desde la app en About › Check for updates.
 
 Hay más respuestas en las [preguntas frecuentes](../faq.en.md).
 
@@ -153,15 +153,15 @@ Hay más respuestas en las [preguntas frecuentes](../faq.en.md).
 - **Documentación**: toda la documentación y un orden de lectura sugerido están en el [índice de documentación](../README.en.md)
 - **Comunidad**: únete al [chat de grupo en X](https://x.com/i/chat/group_join/g2116500883139862983/xP74Qyff3X); para escribir al autor por WeChat, escanea el código QR de la app en About › Contact the author (menciona «Mika» en la solicitud)
 - **Sigue al autor**: X [@wangzan101](https://x.com/wangzan101)
-- **Informa de un problema**: [abre un issue](https://github.com/wangzan101/Mika/issues/new/choose); en la app, About › Send feedback permite adjuntar información de diagnóstico
+- **Informa de un problema**: [abre un issue](https://github.com/sxkiss/Mika/issues/new/choose); en la app, About › Send feedback permite adjuntar información de diagnóstico
 - **Contribuye**: añade conocimiento de uso para una app o un sitio web (texto plano, sin programar) o contribuye con código; consulta la [guía de contribución](../../.github/CONTRIBUTING.md)
 
 ## Star History
 
-<a href="https://star-history.com/#wangzan101/Mika&Date">
+<a href="https://star-history.com/#sxkiss/Mika&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=wangzan101/Mika&type=Date&theme=dark&v=20261101-0434" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=wangzan101/Mika&type=Date&v=20261101-0434" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=sxkiss/Mika&type=Date&theme=dark&v=20261101-0434" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=sxkiss/Mika&type=Date&v=20261101-0434" width="600" />
   </picture>
 </a>
 
@@ -169,8 +169,8 @@ Hay más respuestas en las [preguntas frecuentes](../faq.en.md).
 
 Gracias a todas las personas que han participado en Mika:
 
-<a href="https://github.com/wangzan101/Mika/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=wangzan101/Mika&max=100&columns=12" alt="Contributors" />
+<a href="https://github.com/sxkiss/Mika/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=sxkiss/Mika&max=100&columns=12" alt="Contributors" />
 </a>
 
 ## Licencia

@@ -9,11 +9,11 @@
 
 它在一塊看不見的背景螢幕上做事，你照樣滑你的手機。
 
-<a href="https://github.com/wangzan101/Mika/releases/latest"><img src="https://img.shields.io/badge/%E4%B8%8B%E8%BC%89%20APK-Android%2011%2B-2ea043?style=for-the-badge&logo=android&logoColor=white" alt="下載 APK" /></a>
+<a href="https://github.com/sxkiss/Mika/releases/latest"><img src="https://img.shields.io/badge/%E4%B8%8B%E8%BC%89%20APK-Android%2011%2B-2ea043?style=for-the-badge&logo=android&logoColor=white" alt="下載 APK" /></a>
 
-<a href="https://github.com/wangzan101/Mika/stargazers"><img src="https://img.shields.io/github/stars/wangzan101/Mika?style=flat&logo=github&label=Star&color=1f6feb" alt="stars" /></a>
-<a href="https://github.com/wangzan101/Mika/releases"><img src="https://img.shields.io/github/downloads/wangzan101/Mika/total?label=%E4%B8%8B%E8%BC%89&color=2ea043" alt="downloads" /></a>
-<a href="https://github.com/wangzan101/Mika/releases/latest"><img src="https://img.shields.io/github/v/release/wangzan101/Mika?include_prereleases&label=%E7%89%88%E6%9C%AC" alt="version" /></a>
+<a href="https://github.com/sxkiss/Mika/stargazers"><img src="https://img.shields.io/github/stars/sxkiss/Mika?style=flat&logo=github&label=Star&color=1f6feb" alt="stars" /></a>
+<a href="https://github.com/sxkiss/Mika/releases"><img src="https://img.shields.io/github/downloads/sxkiss/Mika/total?label=%E4%B8%8B%E8%BC%89&color=2ea043" alt="downloads" /></a>
+<a href="https://github.com/sxkiss/Mika/releases/latest"><img src="https://img.shields.io/github/v/release/sxkiss/Mika?include_prereleases&label=%E7%89%88%E6%9C%AC" alt="version" /></a>
 <a href="../../LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-lightgrey" alt="license" /></a>
 
 [English](../../README.md) · [简体中文](README.zh-CN.md) · 繁體中文 · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md)
@@ -69,14 +69,14 @@
 
 ## 三步開始
 
-1. **下載安裝**：從 [Releases](https://github.com/wangzan101/Mika/releases/latest) 下載 APK。
+1. **下載安裝**：從 [Releases](https://github.com/sxkiss/Mika/releases/latest) 下載 APK。
 2. **連上模型**：設定 › 模型，選一家服務商填入 API Key，或直接用帳號登入（[模型與登入](../models.md)）。
 3. **要操作手機 App 時**：照著設定裡「設定手機操作」的引導，在手機上配對一次無線偵錯（[設定指南](../setup-guide.md)）。只聊天、上網、處理檔案的話可以跳過這一步。
 
 然後說一句試試：「幫我設明天早上 9:40 和 10:00 的鬧鐘」「每天早上 8 點看看天氣，會下雨才告訴我」。
 
 > 💡 手邊有電腦？把這句話傳給電腦上的 AI 助手，它會幫你裝好：<br/>
-> `請依照 https://github.com/wangzan101/Mika/blob/main/docs/install-with-agent.md 的步驟，幫我把 Mika 安裝到透過 USB 連著的 Android 手機上。`
+> `請依照 https://github.com/sxkiss/Mika/blob/main/docs/install-with-agent.md 的步驟，幫我把 Mika 安裝到透過 USB 連著的 Android 手機上。`
 
 ## 能做什麼
 
@@ -119,7 +119,7 @@
 | 操作手機 App | Android 12 以上；**建議 Android 14+**（背景螢幕有自己的焦點，不影響你在主螢幕打字） |
 | Linux 沙箱 | arm64 裝置 |
 
-不確定自己的手機行不行？設定 › 恢復與修復 › **相容性自我檢查**，一分鐘跑完 12 項，結果可以一鍵[回報給我們](https://github.com/wangzan101/Mika/issues/new?template=device-report.yml)。
+不確定自己的手機行不行？設定 › 恢復與修復 › **相容性自我檢查**，一分鐘跑完 12 項，結果可以一鍵[回報給我們](https://github.com/sxkiss/Mika/issues/new?template=device-report.yml)。
 
 ## 隱私與安全
 
@@ -140,7 +140,7 @@
 
 **App 有繁體中文介面嗎？** 有。介面有繁體中文、簡體中文和英文，跟隨系統語言，也可以在 設定 › 語言 裡切換。
 
-**更新從哪裡來？** 只從本倉庫的 [Releases](https://github.com/wangzan101/Mika/releases) 發布；App 裡「關於 › 檢查更新」也能直接升級。
+**更新從哪裡來？** 只從本倉庫的 [Releases](https://github.com/sxkiss/Mika/releases) 發布；App 裡「關於 › 檢查更新」也能直接升級。
 
 更多問答見[常見問題](../faq.md)。
 
@@ -151,15 +151,15 @@
 - **文件**：全部文件和閱讀順序見[文件目錄](../README.md)
 - **交流**：App 裡「關於 › 聯絡作者」掃碼加作者微信（請備註 Mika）；不用微信的話可以加入 [X 群聊](https://x.com/i/chat/group_join/g2116500883139862983/xP74Qyff3X)
 - **關注作者**：X [@wangzan101](https://x.com/wangzan101)
-- **回報問題**：[開 Issue](https://github.com/wangzan101/Mika/issues/new/choose)，App 裡「關於 › 回報問題」可以附上診斷資訊
+- **回報問題**：[開 Issue](https://github.com/sxkiss/Mika/issues/new/choose)，App 裡「關於 › 回報問題」可以附上診斷資訊
 - **參與貢獻**：為某個 App、網站補一份使用知識（純文字，不用寫程式），或者貢獻程式碼，見[貢獻指南](../../.github/CONTRIBUTING.zh-CN.md)
 
 ## Star History
 
-<a href="https://star-history.com/#wangzan101/Mika&Date">
+<a href="https://star-history.com/#sxkiss/Mika&Date">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=wangzan101/Mika&type=Date&theme=dark&v=20261101-0434" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=wangzan101/Mika&type=Date&v=20261101-0434" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=sxkiss/Mika&type=Date&theme=dark&v=20261101-0434" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=sxkiss/Mika&type=Date&v=20261101-0434" width="600" />
   </picture>
 </a>
 
@@ -167,8 +167,8 @@
 
 感謝每一位參與 Mika 的人：
 
-<a href="https://github.com/wangzan101/Mika/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=wangzan101/Mika&max=100&columns=12" alt="Contributors" />
+<a href="https://github.com/sxkiss/Mika/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=sxkiss/Mika&max=100&columns=12" alt="Contributors" />
 </a>
 
 ## 授權條款

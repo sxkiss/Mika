@@ -9,16 +9,16 @@ The starting point for using Mika from a computer is [Use Mika from a computer](
 - To let a computer agent that can run commands and supports Skills use Mika, install the [Skill](#skill-install). It includes its own CLI script, so no separate CLI install is needed.
 - To submit tasks from a terminal or script, install the [CLI](#cli-install), which gives you the `mika` command.
 
-On the phone: install the APK ([Releases](https://github.com/wangzan101/Mika/releases/latest)), open Mika once and add a model. **If Mika only needs to chat, browse the web and work with files, you can skip accessibility and the phone helper, and Android 11 works**; only phone app control needs the phone-control setup in the [setup guide](setup-guide.en.md) (Android 12+). Installing or updating the computer tools does not install or update the APK on the phone.
+On the phone: install the APK ([Releases](https://github.com/sxkiss/Mika/releases/latest)), open Mika once and add a model. **If Mika only needs to chat, browse the web and work with files, you can skip accessibility and the phone helper, and Android 11 works**; only phone app control needs the phone-control setup in the [setup guide](setup-guide.en.md) (Android 12+). Installing or updating the computer tools does not install or update the APK on the phone.
 
-Below, `<tag>` means the version tag of the [latest release](https://github.com/wangzan101/Mika/releases/latest) (the `v0.1.x` in its title). Keep the computer tools and the phone APK on the same version where you can.
+Below, `<tag>` means the version tag of the [latest release](https://github.com/sxkiss/Mika/releases/latest) (the `v0.1.x` in its title). Keep the computer tools and the phone APK on the same version where you can.
 
 ## CLI: install
 
 Requires Python 3.10+, Git and pipx; ADB connections also need Android platform-tools. Install:
 
 ```bash
-pipx install 'git+https://github.com/wangzan101/Mika.git@<tag>#subdirectory=tools/mika'
+pipx install 'git+https://github.com/sxkiss/Mika.git@<tag>#subdirectory=tools/mika'
 mika --version
 ```
 
@@ -29,7 +29,7 @@ The pipx package is `mika-phone-cli` and the command is `mika`. The CLI has its 
 To update, use the new `<tag>`; to roll back, use the previous one; `--force` replaces the installed copy:
 
 ```bash
-pipx install --force 'git+https://github.com/wangzan101/Mika.git@<tag>#subdirectory=tools/mika'
+pipx install --force 'git+https://github.com/sxkiss/Mika.git@<tag>#subdirectory=tools/mika'
 ```
 
 `pipx upgrade` does not move to another tag; use the command above to change versions. To remove:
@@ -42,7 +42,7 @@ pipx uninstall mika-phone-cli
 
 The Skill is the repository's `tools/mika` folder: `SKILL.md` tells the agent how to use it, and `scripts/mika_cli.py` is the bundled CLI, which needs only Python 3.10+ (plus platform-tools for ADB connections).
 
-1. From the [latest release](https://github.com/wangzan101/Mika/releases/latest), download **Source code (zip)** and extract it.
+1. From the [latest release](https://github.com/sxkiss/Mika/releases/latest), download **Source code (zip)** and extract it.
 2. Copy the **whole** `tools/mika` folder into your agent's skills directory (see that agent's own documentation for where it is). The result should be `<skills-directory>/mika/SKILL.md`, without an extra nested `mika` folder.
 3. Check that the bundled script runs:
 

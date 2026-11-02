@@ -12,7 +12,7 @@ Mika can get things done just by looking at the screen; for apps and websites wi
 
 ## Reporting issues
 
-When opening an issue, please include your **phone model, Android version and Mika version** ("About Mika" (关于 Mika) in Settings), what you did, what you expected and what actually happened. Screenshots from "View steps" (查看过程) help a lot (hide anything private first). In the app, About › Send feedback can copy diagnostics for you to paste into the issue; results from Settings › Recovery & repair › Compatibility self-check can be filed as a [device report](https://github.com/wangzan101/Mika/issues/new?template=device-report.yml).
+When opening an issue, please include your **phone model, Android version and Mika version** ("About Mika" (关于 Mika) in Settings), what you did, what you expected and what actually happened. Screenshots from "View steps" (查看过程) help a lot (hide anything private first). In the app, About › Send feedback can copy diagnostics for you to paste into the issue; results from Settings › Recovery & repair › Compatibility self-check can be filed as a [device report](https://github.com/sxkiss/Mika/issues/new?template=device-report.yml).
 
 ## Contributing code
 
@@ -57,5 +57,5 @@ The developer docs index and reading order are in [`docs/dev/README.en.md`](../d
 ### Releases and updates (maintainers)
 
 - Releases are published on GitHub Releases with tags `vX.Y.Z`, with the APK attached to the release.
-- Update checks: each time you open the app it queries `https://api.github.com/repos/wangzan101/Mika/releases/latest` and no other address.
+- Update checks: each time you open the app it queries `https://api.github.com/repos/sxkiss/Mika/releases/latest` and no other address.
 - After you tap "Download update" on the About page, the system download service fetches the APK in the background; you can watch progress, delete the download or retry after a failure, and it is still there after reopening the app. When it finishes, tap "Install update", allow Mika to install unknown apps the first time, then confirm on the system installer. Before installing, Mika checks the APK size, the SHA-256 published with the release asset, the package name, the version and the signing certificate, and the system installer verifies the signature again; a build you compiled and signed yourself cannot be installed over the official one without uninstalling first. If a release has no APK, the release page is opened instead.

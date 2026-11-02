@@ -9,16 +9,16 @@
 - 让能执行命令、支持 Skill 的电脑 Agent 用 Mika：装 [Skill](#skill安装)，它自带 CLI 脚本，不必另装 CLI。
 - 在终端或脚本里派任务：装 [CLI](#cli安装)，使用 `mika` 命令。
 
-手机端的前提：装好 APK（[Releases](https://github.com/wangzan101/Mika/releases/latest)）、打开过一次 Mika、配好模型。**只让 Mika 聊天、上网和处理文件时，可以不开无障碍、不启动手机助手，安卓 11 也能用**；要操作手机 App，才需要按[设置指南](setup-guide.md)完成手机操作设置（安卓 12+）。电脑端工具的安装和升级不会安装或更新手机上的 APK。
+手机端的前提：装好 APK（[Releases](https://github.com/sxkiss/Mika/releases/latest)）、打开过一次 Mika、配好模型。**只让 Mika 聊天、上网和处理文件时，可以不开无障碍、不启动手机助手，安卓 11 也能用**；要操作手机 App，才需要按[设置指南](setup-guide.md)完成手机操作设置（安卓 12+）。电脑端工具的安装和升级不会安装或更新手机上的 APK。
 
-下文的 `<tag>` 指 [最新 release](https://github.com/wangzan101/Mika/releases/latest) 的版本标签（页面标题里的 `v0.1.x`）。电脑端和手机上的 APK 尽量用同一个版本。
+下文的 `<tag>` 指 [最新 release](https://github.com/sxkiss/Mika/releases/latest) 的版本标签（页面标题里的 `v0.1.x`）。电脑端和手机上的 APK 尽量用同一个版本。
 
 ## CLI：安装
 
 需要 Python 3.10+、Git 和 pipx；ADB 连接还需要 Android platform-tools。安装：
 
 ```bash
-pipx install 'git+https://github.com/wangzan101/Mika.git@<tag>#subdirectory=tools/mika'
+pipx install 'git+https://github.com/sxkiss/Mika.git@<tag>#subdirectory=tools/mika'
 mika --version
 ```
 
@@ -29,7 +29,7 @@ pipx 里的包名是 `mika-phone-cli`，命令是 `mika`。CLI 有自己的版�
 升级换成新的 `<tag>`，回退换成原来的 `<tag>`，用 `--force` 覆盖安装：
 
 ```bash
-pipx install --force 'git+https://github.com/wangzan101/Mika.git@<tag>#subdirectory=tools/mika'
+pipx install --force 'git+https://github.com/sxkiss/Mika.git@<tag>#subdirectory=tools/mika'
 ```
 
 `pipx upgrade` 不会切换到别的 tag，换版本时用上面的命令。卸载：
@@ -42,7 +42,7 @@ pipx uninstall mika-phone-cli
 
 Skill 就是仓库里的 `tools/mika` 文件夹：`SKILL.md` 告诉 Agent 怎么用，`scripts/mika_cli.py` 是自带的 CLI，只依赖 Python 3.10+（ADB 连接另需 platform-tools）。
 
-1. 在 [最新 release](https://github.com/wangzan101/Mika/releases/latest) 下载 **Source code (zip)** 并解压。
+1. 在 [最新 release](https://github.com/sxkiss/Mika/releases/latest) 下载 **Source code (zip)** 并解压。
 2. 把其中**整个** `tools/mika` 文件夹复制到你的 Agent 的技能目录（位置见该 Agent 自己的说明）。结果应该是 `<技能目录>/mika/SKILL.md`，不要多嵌套一层 `mika`。
 3. 检查自带脚本能运行：
 
