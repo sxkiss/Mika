@@ -32,6 +32,9 @@ class McpPhoneProvider(context: Context) {
     /** 按需创建的 Agent 虚拟屏；null 表示未使用虚拟屏（回退主屏模式）。 */
     private var lazyDisplay: LazyAgentDisplay? = null
 
+    /** 缓存已创建的 ScreenPort，避免 combine 每次发射都重建虚拟屏。 */
+    private var screenPort: ScreenPort? = null
+
     /** 当前可用的手机控制 MCP 工具，未就绪时为 null。 */
     val phoneTools: McpPhoneTools? get() = _phoneTools.get()
 
@@ -49,11 +52,13 @@ class McpPhoneProvider(context: Context) {
             }
             combine(a11yFlow, shellPolling) { a11y, shell -> Pair(a11y, shell) }.collect { (a11y, shell) ->
                 if (a11y != null && shell != null) {
-                    val screen = createScreenPort(a11y, shell)
+                    // 仅在首次就绪或上次断开时创建；复用已有实例避免不断新建虚拟屏
+                    val screen = screenPort ?: createScreenPort(a11y, shell).also { screenPort = it }
                     _phoneTools.set(McpPhoneTools(screen) { getInstalledApps() })
                     Log.d(TAG, "MCP 手机控制已启用")
                 } else {
                     _phoneTools.set(null)
+                    screenPort = null
                     releaseDisplay()
                     Log.w(TAG, "无障碍或壳未就绪，MCP 手机控制已停用")
                 }
@@ -96,6 +101,7 @@ class McpPhoneProvider(context: Context) {
 
     fun clear() {
         _phoneTools.set(null)
+        screenPort = null
         releaseDisplay()
         Log.d(TAG, "MCP 手机控制已清除")
     }
