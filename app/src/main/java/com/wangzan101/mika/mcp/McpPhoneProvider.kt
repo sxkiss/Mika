@@ -1,11 +1,11 @@
 package com.wangzan101.mika.mcp
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.Log
 import android.view.Display
 import com.wangzan101.mika.cap.phone.a11y.ScreenAccessibility
 import com.wangzan101.mika.cap.phone.a11y.ScreenReader
-import com.wangzan101.mika.cap.phone.display.AgentDisplay
 import com.wangzan101.mika.cap.phone.shell.HelperHub
 import com.wangzan101.mika.shell.IMikaShell
 import com.wangzan101.mika.core.mcp.McpPhoneTools
