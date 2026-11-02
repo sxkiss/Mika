@@ -71,7 +71,7 @@ class McpPhoneProvider(context: Context) {
 
     private fun createScreenPort(a11y: ScreenAccessibility, shell: IMikaShell): ScreenPort =
         object : ScreenPort {
-            // 固定使用主屏，确保微信等App的无障碍窗口能被正确读取
+            // 固定使用主屏：无障碍树完整，元素可正常读取
             private val displayId get() = Display.DEFAULT_DISPLAY
             private val width get() = android.content.res.Resources.getSystem().displayMetrics.widthPixels
             private val height get() = android.content.res.Resources.getSystem().displayMetrics.heightPixels
