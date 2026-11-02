@@ -17,7 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.ConcurrentHashMap
@@ -49,17 +49,19 @@ class McpPhoneProvider(context: Context) {
     /** 监听无障碍服务；就绪且 shell 可用时构建工具集（优先使用 Agent 虚拟屏）。 */
     fun startListening(helperHub: () -> HelperHub? = { null }) {
         scope.launch {
-            ScreenAccessibility.instance.collect { a11y ->
-                val shell = helperHub()?.shell?.value
+            // 同时监听无障碍与 shell 流：任何一个就绪都会触发重新评估；
+            // 只 watch 无障碍会错过 shell 晚到、或壳先就绪无障碍后连上的情况。
+            val hubFlow = helperHub()?.shell ?: kotlinx.coroutines.flow.Flow { }
+            combine(ScreenAccessibility.instance, hubFlow) { a11y, shell -> Pair(a11y, shell) }.collect { (a11y, shell) ->
                 if (a11y != null && shell != null) {
                     val d = ensureDisplay(shell)
                     _phoneTools.set(McpPhoneTools(createScreenPort(a11y, shell, d)) { getInstalledApps() })
                     Log.d(TAG, if (d != null) "MCP 手机控制已启用（虚拟屏 ${d.displayId}）" else "MCP 手机控制已启用（回退主屏）")
                 } else {
-                    // 无障碍断开：释放虚拟屏，工具下线
+                    // 任一组件断开：释放虚拟屏，工具下线
                     _phoneTools.set(null)
                     releaseDisplay()
-                    Log.w(TAG, "无障碍服务未就绪，MCP 手机控制已停用")
+                    Log.w(TAG, "无障碍或壳未就绪，MCP 手机控制已停用")
                 }
             }
         }

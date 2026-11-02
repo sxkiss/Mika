@@ -220,9 +220,7 @@ class McpRpc(
         const val META_CAPABILITIES = "io.modelcontextprotocol/clientCapabilities"
         const val META_SERVER = "io.modelcontextprotocol/serverInfo"
 
-        const val INSTRUCTIONS = "Mika is an AI agent running on the user's Android phone. Hand it whole tasks with mika_run_task " +
-            "(it operates the phone's apps and browser itself), then follow them with mika_wait_task. Answer its questions with mika_answer. " +
-            "Payments, confirmations and steps handed to the user can only be done by the user on the phone."
+        const val INSTRUCTIONS = "Mika exposes phone_* MCP tools (observe / screenshot / tap / type / scroll / back / launch_app / list_apps / get_status) that operate on a virtual display. Use them directly; no model needed."
 
         private val json = Json { ignoreUnknownKeys = true }
 
