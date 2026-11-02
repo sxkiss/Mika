@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wangzan101.mika.R
+import com.wangzan101.mika.ui.components.ButtonKind
 import com.wangzan101.mika.ui.components.GroupCard
 import com.wangzan101.mika.ui.components.Hairline
 import com.wangzan101.mika.ui.components.IconTile
@@ -41,9 +42,12 @@ import com.wangzan101.mika.ui.theme.MikaIcons
 import com.wangzan101.mika.ui.theme.MikaTheme
 import com.wangzan101.mika.ui.theme.MikaType
 
-/** 上手第一步:说清 Mika 是什么、能做哪几类事,开始前要做的两件事和大概时间。 */
+/**
+ * 上手第一步:说清 Mika 是什么、能做哪几类事,开始前要做的两件事和大概时间。
+ * [onSkip] 是「稍后配置」:先跳过模型设置进 App(电脑连接/手机控制可以独立用),之后在设置里再配。
+ */
 @Composable
-fun WelcomeScreen(onStart: () -> Unit) {
+fun WelcomeScreen(onStart: () -> Unit, onSkip: () -> Unit) {
     val c = MikaTheme.colors
     PageBackground {
         Column(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.statusBars).windowInsetsPadding(WindowInsets.navigationBars)) {
@@ -71,6 +75,10 @@ fun WelcomeScreen(onStart: () -> Unit) {
                     style = MikaType.Hint, fontSize = 12.5.sp, color = c.ink3, textAlign = TextAlign.Center,
                 )
                 MikaButton(WelcomeCopy.START, onStart, Modifier.fillMaxWidth().testTag("welcome-start"))
+                MikaButton(
+                    WelcomeCopy.LATER, onSkip, Modifier.fillMaxWidth().padding(top = 8.dp).testTag("welcome-later"),
+                    kind = ButtonKind.Tonal,
+                )
             }
         }
     }
@@ -99,6 +107,7 @@ object WelcomeCopy {
     val LEAD: String get() = tr(R.string.welcome_lead)
     val NOTE: String get() = tr(R.string.welcome_note)
     val START: String get() = tr(R.string.welcome_start)
+    val LATER: String get() = tr(R.string.welcome_later)
 
     data class Item(val icon: ImageVector, val title: String, val body: String)
 

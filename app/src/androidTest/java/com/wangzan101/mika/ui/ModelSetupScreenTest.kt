@@ -69,10 +69,16 @@ class ModelSetupScreenTest {
         compose.setContent { MikaTheme { ModelSetupContent(ui, onboarding = onboarding, actions = actions, onBack = {}) } }
 
     @Test fun welcomeStarts() {
-        compose.setContent { MikaTheme { WelcomeScreen { calls += "start" } } }
+        compose.setContent { MikaTheme { WelcomeScreen(onStart = { calls += "start" }, onSkip = { calls += "skip" }) } }
         compose.onNodeWithText(WelcomeCopy.TITLE).assertIsDisplayed()
         compose.onNodeWithTag("welcome-start").performClick()
         assertEquals(listOf("start"), calls)
+    }
+
+    @Test fun welcomeCanSkipModelSetup() {
+        compose.setContent { MikaTheme { WelcomeScreen(onStart = { calls += "start" }, onSkip = { calls += "skip" }) } }
+        compose.onNodeWithTag("welcome-later").assertIsDisplayed().performClick()
+        assertEquals(listOf("skip"), calls)
     }
 
     @Test fun firstVisitShowsFormAndNextIsDisabled() {

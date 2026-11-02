@@ -4,6 +4,7 @@
     <string name="welcome_lead">你手机上的私人助理。\n说要做什么,我在后台替你办完。</string>
     <string name="welcome_note">开始前需要配一个模型、打开手机操作,约 3 分钟</string>
     <string name="welcome_start">开始设置</string>
+    <string name="welcome_later">稍后配置</string>
     <string name="welcome_apps">操作 App</string>
     <string name="welcome_apps_body">在后台的一块屏幕上点、输入、翻页,不占用你的屏幕</string>
     <string name="welcome_web">上网查</string>
