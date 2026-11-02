@@ -29,6 +29,17 @@ class McpPhoneTools(
 ) {
     data class Tool(val name: String, val description: String, val schema: JsonObject, val readOnly: Boolean)
 
+    /**
+     * 最近一次 phone_observe 的快照编号。
+     *
+     * 编号表（NodeIds）只认「某一次快照」里的编号：`resolve` 先按 snapshotId 找到那份快照，再按下标取元素。
+     * 原来 tap/type 传的是空串，`history.indexOfFirst { it.id == "" }` 永远为 -1，于是任何按 ref 的操作都
+     * 必然 ref_expired——工具说明里写着「按 ref 点」，实际这条路一直是断的，只有坐标能点。
+     * 这里把 observe 的编号记下来，后续按 ref 的动作都用它。
+     */
+    @Volatile
+    private var lastSnapshotId: String = ""
+
     val tools: List<Tool> = listOf(
         Tool(
             "phone_observe",
@@ -150,6 +161,7 @@ class McpPhoneTools(
     private suspend fun handleObserve(args: JsonObject): String {
         val verbose = args["verbose"]?.jsonPrimitive?.booleanOrNull ?: false
         val snapshot = runCatching { screen.snapshot() }.getOrElse { return errorJson(it.message ?: "snapshot failed") }
+        lastSnapshotId = snapshot.snapshotId
         return buildJsonObject {
             put("snapshot_id", snapshot.snapshotId)
             put("package", snapshot.packageName ?: "unknown")
@@ -184,7 +196,7 @@ class McpPhoneTools(
         val x = args["x"]?.jsonPrimitive?.intOrNull
         val y = args["y"]?.jsonPrimitive?.intOrNull
         val result = when {
-            ref != null -> ref.let { screen.tapRef(it, "") }
+            ref != null -> screen.tapRef(ref, lastSnapshotId)
             x != null && y != null -> screen.tapXY(x, y)
             else -> return errorJson("phone_tap needs ref or x&y")
         }
@@ -194,7 +206,7 @@ class McpPhoneTools(
     private suspend fun handleType(args: JsonObject): String {
         val text = args["text"]?.jsonPrimitive?.contentOrNull ?: return errorJson("Missing text")
         val ref = args["ref"]?.jsonPrimitive?.contentOrNull
-        val result = runCatching { screen.typeText(ref, if (ref != null) "" else null, text) }
+        val result = runCatching { screen.typeText(ref, if (ref != null) lastSnapshotId else null, text) }
             .getOrElse { return errorJson(it.message ?: "type failed") }
         return resultJson(result)
     }

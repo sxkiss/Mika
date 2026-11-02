@@ -4,6 +4,7 @@ import com.wangzan101.mika.core.uistate.ActionResult
 import com.wangzan101.mika.core.uistate.ScreenPort
 import com.wangzan101.mika.core.uistate.ScreenSnapshot
 import com.wangzan101.mika.core.uistate.UiElement
+import com.wangzan101.mika.core.uistate.VisibleTextLine
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.atomic.AtomicInteger
@@ -31,16 +32,11 @@ class McpScreenPort(
     private val ocrLock = Mutex()
     private val ocrSeq = AtomicInteger()
 
-    /** 上一次 snapshot 是否走的 OCR 兜底（此时无障碍树读不出任何元素）。 */
-    @Volatile
-    private var lastWasOcr = false
-
     override suspend fun snapshot(): ScreenSnapshot {
         val real = base.snapshot()
         // 无障碍树读得出东西就用它，这是最准的
         if (real.elements.isNotEmpty()) {
             ocrLock.withLock { ocrTargets.clear() }
-            lastWasOcr = false
             return real
         }
 
@@ -48,19 +44,24 @@ class McpScreenPort(
         val lines = runCatching { base.readVisibleText() }.getOrNull()
         if (lines.isNullOrEmpty()) {
             ocrLock.withLock { ocrTargets.clear() }
-            lastWasOcr = false
             return real
         }
 
         val gen = ocrSeq.incrementAndGet()
         val targets = HashMap<String, Pair<Int, Int>>()
-        val elements = lines.mapIndexed { i, line ->
-            val ref = "@o${i + 1}"
+        val kept = ArrayList<VisibleTextLine>(lines.size)
+        val elements = ArrayList<UiElement>(lines.size)
+        // 中英两套模型各认一遍，同一行字会回来两份（有时文字还略有出入），按框重叠去重，
+        // 否则元素表里每行都出现两次，模型点哪一份都行、却白白翻倍
+        for (line in lines) {
+            if (kept.any { overlaps(it.bounds, line.bounds) }) continue
+            kept += line
+            val ref = "@o${kept.size}"
             val b = line.bounds
             val cx = ((b[0] + b[2]) / 2.0 * (real.width - 1) / 999.0).toInt()
             val cy = ((b[1] + b[3]) / 2.0 * (real.height - 1) / 999.0).toInt()
             targets[ref] = cx to cy
-            UiElement(
+            elements += UiElement(
                 ref = ref,
                 role = "Text",
                 name = line.text,
@@ -79,7 +80,6 @@ class McpScreenPort(
                 ocrTargets.putAll(targets)
             }
         }
-        lastWasOcr = true
         return real.copy(elements = elements, snapshotId = "ocr_${real.snapshotId}")
     }
 
@@ -90,23 +90,58 @@ class McpScreenPort(
         return base.tapRef(ref, snapshotId)
     }
 
+    /**
+     * 微信这类 App 上元素表来自 OCR，编号不在无障碍树的编号表里，`typeText` 按 ref 找框必然 ref_expired。
+     * 这里退一步：先点那行字把输入框叫出来，再按当前焦点输入。
+     */
+    override suspend fun typeText(ref: String?, snapshotId: String?, text: String): ActionResult {
+        if (ref != null) {
+            val at = ocrLock.withLock { ocrTargets[ref] }
+            if (at != null) {
+                val tapped = base.tapXY(at.first, at.second)
+                if (tapped !is ActionResult.Ok) return tapped
+                return base.typeText(null, null, text)
+            }
+        }
+        return base.typeText(ref, snapshotId, text)
+    }
+
     /** MCP 传进来的是 0–999 归一化坐标，换成像素再交给端口。 */
     override suspend fun tapXY(x: Int, y: Int): ActionResult {
-        val snap = base.snapshot()
+        // 用 peek 不用 snapshot：只想知道屏多大，不能顺手往编号表里塞一份新快照，
+        // 否则每点一下都把模型手里的那份挤旧一层（编号表只留最近 4 份）
+        val snap = base.peek()
         if (snap.width <= 1 || snap.height <= 1) return base.tapXY(x, y)
         return base.tapXY(x * (snap.width - 1) / 999, y * (snap.height - 1) / 999)
     }
 
     /** 同 [tapXY]：0–999 归一化换像素。 */
     override suspend fun typeAt(x: Int, y: Int, text: String): ActionResult {
-        val snap = base.snapshot()
+        val snap = base.peek()
         if (snap.width <= 1 || snap.height <= 1) return base.typeAt(x, y, text)
         return base.typeAt(x * (snap.width - 1) / 999, y * (snap.height - 1) / 999, text)
     }
 
     override suspend fun clearAt(x: Int, y: Int): ActionResult {
-        val snap = base.snapshot()
+        val snap = base.peek()
         if (snap.width <= 1 || snap.height <= 1) return base.clearAt(x, y)
         return base.clearAt(x * (snap.width - 1) / 999, y * (snap.height - 1) / 999)
+    }
+
+    /** 两个 0–999 的框是不是同一行字：纵向大部分重叠、横向也压得上。 */
+    private fun overlaps(a: List<Int>, b: List<Int>): Boolean {
+        if (a.size < 4 || b.size < 4) return false
+        val top = maxOf(a[1], b[1])
+        val bottom = minOf(a[3], b[3])
+        val v = bottom - top
+        if (v <= 0) return false
+        val minH = minOf(a[3] - a[1], b[3] - b[1]).coerceAtLeast(1)
+        if (v * 2 < minH) return false
+        val left = maxOf(a[0], b[0])
+        val right = minOf(a[2], b[2])
+        val h = right - left
+        if (h <= 0) return false
+        val minW = minOf(a[2] - a[0], b[2] - b[0]).coerceAtLeast(1)
+        return h * 2 >= minW
     }
 }
