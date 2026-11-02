@@ -66,7 +66,7 @@ object Prerequisites {
     const val MIN_SDK = 31
     /** 安卓 14 起虚拟屏能有自己的焦点,不再影响主屏。 */
     const val OWN_FOCUS_SDK = 34
-    private fun isWarning(p: Problem) = p == Problem.NotificationsOff || p == Problem.FocusMayLeak || p is Problem.AttentionLowered
+    private fun isWarning(p: Problem) = p == Problem.NoModel || p == Problem.NotificationsOff || p == Problem.FocusMayLeak || p is Problem.AttentionLowered
 
     data class Check(val problems: List<Problem>) {
         /** 挡住任务的问题。手机操作的系统版本、内置助手、无障碍只在操作手机 App 时需要。 */

@@ -205,8 +205,6 @@ private fun MikaRoot(store: ProviderStore, monitor: SystemStatusMonitor, activit
     val nav = rememberNavStack()
     // 从设置页「重新配对」进来时先回到配对一步
     var setupRepair by rememberSaveable { mutableStateOf(false) }
-    // 首次上手正在走哪一步;为空时不在上手流程里。配置模型页从哪儿来就回哪儿去
-    var onboarding by rememberSaveable { mutableStateOf<OnboardingStep?>(null) }
     val onFix: (Fix) -> Unit = { fix ->
         when (fix) {
             Fix.AddModel -> nav.push(Route.Models)
@@ -221,9 +219,7 @@ private fun MikaRoot(store: ProviderStore, monitor: SystemStatusMonitor, activit
     var sourceRunId by rememberSaveable { mutableStateOf<String?>(null) }
     var sourceLegacyText by rememberSaveable { mutableStateOf<String?>(null) }
     val status by monitor.status.collectAsState()
-    val roles by store.roles.collectAsState()
-    val hasMain = roles.main != null
-    val check = Prerequisites.check(status, hasMain)
+    val check = Prerequisites.check(status, hasMainModel = false)
     val context = LocalContext.current
     val app = context.applicationContext as MikaApp
     // 查到的新版本:侧栏、设置首页、关于页的红点都看它
@@ -241,28 +237,12 @@ private fun MikaRoot(store: ProviderStore, monitor: SystemStatusMonitor, activit
     val phoneSetup = remember { PhoneServices.of(context).setupPrompt }
     val openMemory by memoryRuntime.openRequest.collectAsState()
     LaunchedEffect(openMemory) { if (openMemory != null) nav.push(Route.Memory) }
-    // 第一次打开:欢迎 → 配置模型 → 手机操作;配过模型的跳过前两步,手机操作已就绪或看过引导的跳过最后一步
+    // 纯 MCP 模式:跳过模型配置,只在手机操作尚未就绪且没看过引导时走一次 PhoneSetup
     val onboardingState = remember { OnboardingState(context) }
     fun onboardingInputs() = Onboarding.Inputs(
-        hasMainModel = store.roles.value.main != null,
-        modelSetupDone = onboardingState.modelSetupDone(),
         phoneNeeded = status.builtinShell != BuiltinShellStatus.Running && status.sdkInt >= Prerequisites.MIN_SDK,
         phoneGuideSeen = phoneSetup.guideSeen(),
-        modelSetupSkipped = onboardingState.modelSetupSkipped(),
     )
-    fun goOnboarding(step: OnboardingStep?) {
-        onboarding = step
-        when (step) {
-            // 上手的每一步都直接放在对话页上面一层,做完回到对话页
-            OnboardingStep.Welcome -> nav.show(Route.Welcome)
-            OnboardingStep.Model -> nav.show(Route.ModelSetup)
-            OnboardingStep.Phone -> { setupRepair = false; nav.show(Route.PhoneSetup) }
-            null -> nav.reset()
-        }
-    }
-    LaunchedEffect(Unit) {
-        if (onboarding == null) Onboarding.start(onboardingInputs())?.let(::goOnboarding)
-    }
     val phoneSetupNeeded by phoneSetup.needed.collectAsState()
     // 页面有自己的返回处理时(设置页里的子页、侧栏)由它们先接;这里只管退回上一页
     BackHandler(enabled = nav.canGoBack) { nav.back() }
@@ -270,30 +250,9 @@ private fun MikaRoot(store: ProviderStore, monitor: SystemStatusMonitor, activit
     // 聊天页离开组合树时保留列表位置和输入内容，返回设置页等子页面后原样恢复。
     val screenStates = rememberSaveableStateHolder()
     when (nav.current) {
-        Route.PhoneSetup -> PhoneSetupScreen(status, setupRepair, onFix, onboarding = onboarding == OnboardingStep.Phone) {
+        Route.PhoneSetup -> PhoneSetupScreen(status, setupRepair, onFix, onboarding = false) {
             phoneSetup.markGuideSeen()
-            if (onboarding == OnboardingStep.Phone) goOnboarding(null) else nav.back()
-        }
-        Route.Welcome -> WelcomeScreen(
-            onStart = { goOnboarding(OnboardingStep.Model) },
-            // 稍后配置:记下来,直接去手机操作那一步(或进对话);聊天任务仍由 Prerequisites 拦住并提示去加模型
-            onSkip = {
-                onboardingState.markModelSetupSkipped()
-                goOnboarding(Onboarding.next(OnboardingStep.Model, onboardingInputs()))
-            },
-        )
-        Route.ModelSetup -> {
-            val inOnboarding = onboarding == OnboardingStep.Model
-            ModelSetupScreen(
-                store, onboarding = inOnboarding,
-                onBack = { if (inOnboarding) goOnboarding(OnboardingStep.Welcome) else nav.back() },
-                onDone = {
-                    if (inOnboarding) {
-                        onboardingState.markModelSetupDone()
-                        goOnboarding(Onboarding.next(OnboardingStep.Model, onboardingInputs()))
-                    } else nav.back()
-                },
-            )
+            nav.reset()
         }
         Route.Chat -> screenStates.SaveableStateProvider(Route.Chat.name) {
             // 对话页重新看得见(回到前台、从别的页面回来):补上别处存进来的轮次,接上别处开始的任务
