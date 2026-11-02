@@ -51,7 +51,7 @@ class McpPhoneProvider(context: Context) {
         scope.launch {
             // 同时监听无障碍与 shell 流：任何一个就绪都会触发重新评估；
             // 只 watch 无障碍会错过 shell 晚到、或壳先就绪无障碍后连上的情况。
-            val hubFlow = helperHub()?.shell ?: kotlinx.coroutines.flow.Flow { }
+            val hubFlow = helperHub()?.shell ?: kotlinx.coroutines.flow.emptyFlow<IMikaShell?>()
             combine(ScreenAccessibility.instance, hubFlow) { a11y, shell -> Pair(a11y, shell) }.collect { (a11y, shell) ->
                 if (a11y != null && shell != null) {
                     val d = ensureDisplay(shell)
