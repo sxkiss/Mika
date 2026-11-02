@@ -289,6 +289,12 @@ class MikaApp : Application(), WebOwner, SandboxOwner, TaskEnvironment.Owner, Ph
 
     override fun onCreate() {
         super.onCreate()
+        // 提前初始化 MCP 相关组件，确保工具列表在用户打开电脑连接页前就已就绪
+        _mcpPhoneProvider ?: run { @Suppress("UNREACHABLE_CODE") mcpPhoneProvider }
+        _mcp ?: run { @Suppress("UNREACHABLE_CODE") mcp }
+        // 提前初始化 MCP 相关组件，确保工具列表在用户打开电脑连接页前就已就绪
+        _mcpPhoneProvider ?: run { @Suppress("UNREACHABLE_CODE") mcpPhoneProvider }
+        _mcp ?: run { @Suppress("UNREACHABLE_CODE") mcp }
         // 界面以外的文字(通知、服务、悬浮胶囊)按 App 语言取
         AppLanguage.applyDefaultLocale(this)
         UiText.source = ResourceTexts { AppLanguage.resources(this) }
