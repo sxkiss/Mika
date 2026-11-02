@@ -108,7 +108,13 @@ class McpPhoneProvider(context: Context) {
             private val height get() = agent?.height ?: android.content.res.Resources.getSystem().displayMetrics.heightPixels
 
             override suspend fun snapshot(): ScreenSnapshot {
-                val windows = a11y.windowsOn(displayId)
+                var windows = a11y.windowsOn(displayId)
+                // 虚拟屏无障碍树可能为空（微信等 App 的窗口未正确映射到虚拟 displayId）
+                // 回退主屏读元素树，点击坐标仍按虚拟屏尺寸映射
+                if (windows.isEmpty() && agent != null) {
+                    windows = a11y.windowsOn(Display.DEFAULT_DISPLAY)
+                    Log.d(TAG, "虚拟屏元素树空，回退主屏: ${windows.size} 个窗口")
+                }
                 val read = ScreenReader.read(windows, width, height)
                 refMap.clear()
                 read.entries.forEach { e ->
