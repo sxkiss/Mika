@@ -115,7 +115,14 @@ class McpPhoneProvider(context: Context) {
                     windows = a11y.windowsOn(Display.DEFAULT_DISPLAY)
                     Log.d(TAG, "虚拟屏元素树空，回退主屏: ${windows.size} 个窗口")
                 }
-                val read = ScreenReader.read(windows, width, height)
+                var read = ScreenReader.read(windows, width, height)
+                // 虚拟屏上微信等 App 的节点被系统标成 isVisibleToUser=false，窗口存在但元素表为空。
+                // 此时放宽可见性过滤重读一次（ref 仍按屏幕坐标点击，可用）。
+                if (read.entries.isEmpty() && windows.isNotEmpty()) {
+                    read = ScreenReader.read(windows, width, height, includeInvisible = true)
+                    Log.d(TAG, "元素表为空，放宽可见性重读: ${read.entries.size} 个元素；" +
+                        "窗口=${windows.size} root子节点=${windows.firstOrNull()?.root?.childCount}")
+                }
                 refMap.clear()
                 read.entries.forEach { e ->
                     refMap[e.element.ref] = Pair(e.element.centerX, e.element.centerY)

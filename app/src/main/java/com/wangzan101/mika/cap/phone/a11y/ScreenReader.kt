@@ -50,7 +50,14 @@ internal object ScreenReader {
         contentWindows(windows).filter { it.type == AccessibilityWindowInfo.TYPE_APPLICATION }
             .firstNotNullOfOrNull { it.root?.packageName?.toString() }
 
-    fun read(windows: List<AccessibilityWindowInfo>, width: Int, height: Int): ScreenRead {
+    fun read(
+        windows: List<AccessibilityWindowInfo>,
+        width: Int,
+        height: Int,
+        /** 虚拟屏上有些 App（如微信）的节点被系统标成 isVisibleToUser=false，导致元素表为空；
+         *  调用方读不到元素时可用 true 放宽该过滤重读一次。 */
+        includeInvisible: Boolean = false,
+    ): ScreenRead {
         val content = contentWindows(windows)
         val entries = mutableListOf<NodeEntry>()
         val texts = mutableListOf<String>()
@@ -62,7 +69,7 @@ internal object ScreenReader {
 
         fun visit(n: AccessibilityNodeInfo, depth: Int, inList: Boolean): List<UiTreeNode> {
             if (depth > MAX_DEPTH) return emptyList()
-            val visible = n.isVisibleToUser
+            val visible = includeInvisible || n.isVisibleToUser
             var ref: String? = null
             var clippedBounds = listOf(0, 0, 0, 0)
             if (visible) {
