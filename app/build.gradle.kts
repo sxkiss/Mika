@@ -36,10 +36,28 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    // 固定 debug 签名:CI runner 每次都是全新环境,没有 ~/.android/debug.keystore 时
+    // AGP 会自动生成一个随机证书,导致每次构建签名不同、新包无法覆盖安装旧包
+    // (INSTALL_FAILED_UPDATE_INCOMPATIBLE)。仓库内提交固定 keystore 后所有构建签名一致。
+    // debug keystore 密码公开无安全影响,仅用于开发调试包;release 签名配置不受影响。
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("keystore/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     // 评测任务集(仓库根目录 eval/tasks)打进测试包的 assets,真机评测跑器从那里读题
     sourceSets.getByName("androidTest").assets.srcDir(rootProject.file("eval/tasks"))
 
     buildTypes {
+        // 显式绑定固定 debug 签名,避免依赖 AGP 自动生成的随机证书
+        getByName("debug") {
+            signingConfig = signingConfigs.getByName("debug")
+        }
+
         // 看流畅度用的包:和发布版一样不可调试(调试包不做预先编译,界面慢好几倍,手感不作数),
         // 用本机调试签名,能直接覆盖调试包、保留数据;可被性能工具采样。./gradlew :app:assemblePerf
         create("perf") {
