@@ -3,9 +3,12 @@ package com.wangzan101.mika.mcp
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
+import android.view.Display
 import com.wangzan101.mika.cap.phone.a11y.ScreenAccessibility
 import com.wangzan101.mika.cap.phone.a11y.ScreenReader
+import com.wangzan101.mika.cap.phone.display.AgentDisplay
 import com.wangzan101.mika.cap.phone.shell.HelperHub
+import com.wangzan101.mika.shell.IMikaShell
 import com.wangzan101.mika.core.mcp.McpPhoneTools
 import com.wangzan101.mika.core.uistate.ActionResult
 import com.wangzan101.mika.core.uistate.ScreenPort
@@ -24,7 +27,7 @@ import java.util.concurrent.atomic.AtomicReference
  * MCP 手机控制工具提供者。
  *
  * 监听无障碍服务连接状态，就绪且 shell 可用时创建 [McpPhoneTools] 并交给 [McpRuntime]。
- * MCP 直接操作「用户主屏」(Display.DEFAULT_DISPLAY)，不走任务的虚拟屏。
+ * 优先在 [AgentDisplay] 虚拟屏上操作（不抢占用户主屏）；虚拟屏建不出时回退主屏。
  */
 class McpPhoneProvider(context: Context) {
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
@@ -35,24 +38,50 @@ class McpPhoneProvider(context: Context) {
     /** 最近一次快照的 ref -> 元素中心坐标(像素)。 */
     private val refMap = ConcurrentHashMap<String, Pair<Int, Int>>()
 
+    /** Agent 虚拟屏；建不出时为 null，回退到主屏。 */
+    @Volatile private var display: AgentDisplay? = null
+
     /** 当前可用的手机控制 MCP 工具，未就绪时为 null。 */
     val phoneTools: McpPhoneTools? get() = _phoneTools.get()
 
     val isA11yReady: Boolean get() = ScreenAccessibility.instance.value != null
 
-    /** 监听无障碍服务；就绪且 shell 可用时构建工具集。 */
+    /** 监听无障碍服务；就绪且 shell 可用时构建工具集（优先使用 Agent 虚拟屏）。 */
     fun startListening(helperHub: () -> HelperHub? = { null }) {
         scope.launch {
-            ScreenAccessibility.instance.filterNotNull().collect { a11y ->
+            ScreenAccessibility.instance.collect { a11y ->
                 val shell = helperHub()?.shell?.value
                 if (a11y != null && shell != null) {
-                    _phoneTools.set(McpPhoneTools(createScreenPort(a11y, shell)) { getInstalledApps() })
-                    Log.d(TAG, "MCP 手机控制已启用")
+                    val d = ensureDisplay(shell)
+                    _phoneTools.set(McpPhoneTools(createScreenPort(a11y, shell, d)) { getInstalledApps() })
+                    Log.d(TAG, if (d != null) "MCP 手机控制已启用（虚拟屏 ${d.displayId}）" else "MCP 手机控制已启用（回退主屏）")
                 } else {
-                    Log.w(TAG, "无障碍服务就绪但 shell 未连接")
+                    // 无障碍断开：释放虚拟屏，工具下线
+                    _phoneTools.set(null)
+                    releaseDisplay()
+                    Log.w(TAG, "无障碍服务未就绪，MCP 手机控制已停用")
                 }
             }
         }
+    }
+
+    /** 按需创建 Agent 虚拟屏；失败时记录并返回 null（调用方回退主屏，不崩溃）。 */
+    private fun ensureDisplay(shell: IMikaShell): AgentDisplay? {
+        display?.let { return it }
+        return try {
+            val metrics = appContext.resources.displayMetrics
+            AgentDisplay(shell, metrics.widthPixels, metrics.heightPixels, metrics.densityDpi).also {
+                display = it
+            }
+        } catch (t: Throwable) {
+            Log.w(TAG, "创建虚拟屏失败，回退主屏", t)
+            null
+        }
+    }
+
+    private fun releaseDisplay() {
+        display?.let { runCatching { it.release() }.onFailure { e -> Log.w(TAG, "释放虚拟屏失败", e) } }
+        display = null
     }
 
     private fun getInstalledApps(): List<String> =
@@ -60,14 +89,16 @@ class McpPhoneProvider(context: Context) {
             .map { it.packageName }
             .filter { it != appContext.packageName }
 
-    private fun createScreenPort(a11y: ScreenAccessibility, shell: com.wangzan101.mika.shell.IMikaShell): ScreenPort =
+    private fun createScreenPort(a11y: ScreenAccessibility, shell: IMikaShell, agent: AgentDisplay?): ScreenPort =
         object : ScreenPort {
-            private val displayId get() = android.view.Display.DEFAULT_DISPLAY
+            // 优先虚拟屏；建不出时回退主屏
+            private val displayId get() = agent?.displayId ?: Display.DEFAULT_DISPLAY
+            private val width get() = agent?.width ?: android.content.res.Resources.getSystem().displayMetrics.widthPixels
+            private val height get() = agent?.height ?: android.content.res.Resources.getSystem().displayMetrics.heightPixels
 
             override suspend fun snapshot(): ScreenSnapshot {
-                val dm = android.content.res.Resources.getSystem().displayMetrics
                 val windows = a11y.windowsOn(displayId)
-                val read = ScreenReader.read(windows, dm.widthPixels, dm.heightPixels)
+                val read = ScreenReader.read(windows, width, height)
                 refMap.clear()
                 read.entries.forEach { e ->
                     refMap[e.element.ref] = Pair(e.element.centerX, e.element.centerY)
@@ -76,14 +107,18 @@ class McpPhoneProvider(context: Context) {
                     snapshotId = "mcp_${System.currentTimeMillis()}",
                     packageName = ScreenReader.topPackage(windows),
                     elements = read.entries.map { it.element },
-                    width = dm.widthPixels,
-                    height = dm.heightPixels,
+                    width = width,
+                    height = height,
                     windows = read.windows,
                 )
             }
 
             override suspend fun screenshotPng(): ByteArray? = try {
-                when (val shot = a11y.takeMainScreenshot()) {
+                // 虚拟屏：直接取 AgentDisplay 的最新帧；回退主屏时走无障碍截图
+                val virtual = agent?.latestFramePng()
+                if (virtual != null) {
+                    virtual
+                } else when (val shot = a11y.takeMainScreenshot()) {
                     is ScreenAccessibility.MainShot.Ok -> {
                         val out = ByteArrayOutputStream()
                         shot.bitmap.compress(Bitmap.CompressFormat.PNG, 90, out)
@@ -110,8 +145,7 @@ class McpPhoneProvider(context: Context) {
             }
 
             override suspend fun tapXY(x: Int, y: Int): ActionResult = runAction {
-                val dm = android.content.res.Resources.getSystem().displayMetrics
-                shell.injectTap(displayId, x * dm.widthPixels / 999, y * dm.heightPixels / 999)
+                shell.injectTap(displayId, x * width / 999, y * height / 999)
             }
 
             override suspend fun typeText(ref: String?, snapshotId: String?, text: String): ActionResult = runAction {
@@ -128,10 +162,9 @@ class McpPhoneProvider(context: Context) {
             }
 
             override suspend fun scroll(ref: String?, snapshotId: String?, down: Boolean): ActionResult = runAction {
-                val dm = android.content.res.Resources.getSystem().displayMetrics
-                val cx = dm.widthPixels / 2f
-                val cy = dm.heightPixels / 2f
-                val dist = dm.heightPixels / 3f
+                val cx = width / 2f
+                val cy = height / 2f
+                val dist = height / 3f
                 val fromY = if (down) cy + dist else cy - dist
                 val toY = if (down) cy - dist else cy + dist
                 val path = android.graphics.Path().apply {
@@ -170,13 +203,23 @@ class McpPhoneProvider(context: Context) {
             }
 
             override suspend fun openApp(packageName: String, cold: Boolean): ActionResult = try {
-                val intent = packageManager.getLaunchIntentForPackage(packageName)
-                if (intent != null) {
-                    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
-                    appContext.startActivity(intent)
-                    ActionResult.Ok()
+                if (agent != null) {
+                    // 虚拟屏：由 shell 在指定 display 上启动，不打扰用户主屏
+                    when (shell.startApp(displayId, packageName)) {
+                        0 -> ActionResult.Ok()
+                        1 -> ActionResult.Failed("app_in_use_on_main_screen")
+                        2 -> ActionResult.Failed("app_not_found: $packageName")
+                        else -> ActionResult.Failed("launch_failed")
+                    }
                 } else {
-                    ActionResult.Failed("app_not_found: $packageName")
+                    val intent = packageManager.getLaunchIntentForPackage(packageName)
+                    if (intent != null) {
+                        intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                        appContext.startActivity(intent)
+                        ActionResult.Ok()
+                    } else {
+                        ActionResult.Failed("app_not_found: $packageName")
+                    }
                 }
             } catch (e: Exception) {
                 ActionResult.Failed(e.message ?: "launch_failed")
@@ -194,6 +237,7 @@ class McpPhoneProvider(context: Context) {
     fun clear() {
         _phoneTools.set(null)
         refMap.clear()
+        releaseDisplay()
         Log.d(TAG, "MCP 手机控制已清除")
     }
 

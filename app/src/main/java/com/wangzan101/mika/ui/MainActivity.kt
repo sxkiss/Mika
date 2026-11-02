@@ -237,12 +237,6 @@ private fun MikaRoot(store: ProviderStore, monitor: SystemStatusMonitor, activit
     val phoneSetup = remember { PhoneServices.of(context).setupPrompt }
     val openMemory by memoryRuntime.openRequest.collectAsState()
     LaunchedEffect(openMemory) { if (openMemory != null) nav.push(Route.Memory) }
-    // 纯 MCP 模式:跳过模型配置,只在手机操作尚未就绪且没看过引导时走一次 PhoneSetup
-    val onboardingState = remember { OnboardingState(context) }
-    fun onboardingInputs() = Onboarding.Inputs(
-        phoneNeeded = status.builtinShell != BuiltinShellStatus.Running && status.sdkInt >= Prerequisites.MIN_SDK,
-        phoneGuideSeen = phoneSetup.guideSeen(),
-    )
     val phoneSetupNeeded by phoneSetup.needed.collectAsState()
     // 页面有自己的返回处理时(设置页里的子页、侧栏)由它们先接;这里只管退回上一页
     BackHandler(enabled = nav.canGoBack) { nav.back() }
