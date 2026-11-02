@@ -59,10 +59,16 @@ class McpPhoneProvider(context: Context) {
             }
             combine(a11yFlow, shellPolling) { a11y, shell -> Pair(a11y, shell) }.collect { (a11y, shell) ->
                 if (a11y != null && shell != null) {
-                    // 仅在首次就绪时创建；复用已有实例，避免 combine 每 500ms 重建一块虚拟屏
-                    val screen = screenPort ?: createScreenPort(a11y, shell).also { screenPort = it }
-                    _phoneTools.set(McpPhoneTools(screen) { getInstalledApps() })
-                    Log.d(TAG, "MCP 手机控制已启用（虚拟屏/小窗模式）")
+                    // 只在首次就绪时建一次；之后复用同一个实例。
+                    // 原来这里每 500ms 都 new 一个 McpPhoneTools，除了白白分配，
+                    // 还会把工具里记的快照编号清空——observe 之后 500ms 内 tap，
+                    // 编号就已经丢了，ref 永远 ref_expired。
+                    val tools = _phoneTools.get()
+                    if (tools == null) {
+                        val screen = screenPort ?: createScreenPort(a11y, shell).also { screenPort = it }
+                        _phoneTools.set(McpPhoneTools(screen) { getInstalledApps() })
+                        Log.d(TAG, "MCP 手机控制已启用（虚拟屏/小窗模式）")
+                    }
                 } else {
                     _phoneTools.set(null)
                     screenPort = null
