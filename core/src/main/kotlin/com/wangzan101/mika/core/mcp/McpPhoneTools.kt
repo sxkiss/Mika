@@ -44,10 +44,10 @@ class McpPhoneTools(
         Tool(
             "phone_observe",
             "Read the current screen UI tree. Returns element list with refs, roles, names, bounds.",
-            schema(listOf("verbose")) {
+            schema(emptyList()) {
                 putJsonObject("verbose") {
                     put("type", "boolean")
-                    put("description", "Include full element details (true) or summary (false)")
+                    put("description", "Include full element details (true) or summary (false, default)")
                 }
             },
             readOnly = true
