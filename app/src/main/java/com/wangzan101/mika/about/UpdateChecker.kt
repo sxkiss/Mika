@@ -12,9 +12,12 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.longOrNull
 import kotlinx.serialization.json.put
@@ -115,8 +118,8 @@ class UpdateChecker(
      */
     internal fun fetchLatest(): ReleaseInfo? = runCatching {
         val listJson = get("https://api.github.com/repos/sxkiss/Mika/releases?per_page=30")
-        val arr = Json { ignoreUnknownKeys = true }.parseToJsonElement(listJson).jsonArray
-        arr.sortedByDescending { elem ->
+        val arr = Json { ignoreUnknownKeys = true }.parseToJsonElement(listJson) as JsonArray
+        arr.sortedByDescending { elem: JsonElement ->
             (elem.jsonObject["published_at"] as? JsonPrimitive)?.content.orEmpty()
         }.firstOrNull()?.let { Releases.fromGitHub(it.toString()) }
     }.getOrNull()
