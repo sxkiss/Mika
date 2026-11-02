@@ -11,6 +11,18 @@ import kotlin.math.roundToInt
 
 const val DOUBLE_TAP_UNSUPPORTED = "double_tap_unsupported"
 
+/**
+ * 把编号（如 `@e3` / `e3` / `3`）解析成 0 起下标。
+ *
+ * 快照里给出的编号一律带 `@e` 前缀，但外部调用方（MCP 工具说明里写的就是 `e3`）常按去掉前缀的
+ * 形式回传。这里统一两种写法都认，避免「明明刚 observe 过却 ref_expired」。
+ */
+fun refIndex(ref: String): Int? {
+    val body = ref.removePrefix("@").removePrefix("e").removePrefix("E")
+    return body.toIntOrNull()?.minus(1)?.takeIf { it >= 0 }
+}
+
+
 /** 两次点击之间的间隔:够短才会被认成双击(安卓的双击时限是 300 毫秒)。 */
 const val DOUBLE_TAP_GAP_MS = 120L
 

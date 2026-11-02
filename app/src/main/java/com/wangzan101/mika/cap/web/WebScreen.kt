@@ -35,6 +35,7 @@ import com.wangzan101.mika.core.uistate.ScreenSnapshot
 import com.wangzan101.mika.core.uistate.UiElement
 import com.wangzan101.mika.core.uistate.Verification
 import com.wangzan101.mika.core.uistate.relocate
+import com.wangzan101.mika.core.uistate.refIndex
 import com.wangzan101.mika.core.cap.web.DEVTOOLS_UNAVAILABLE
 import com.wangzan101.mika.core.cap.web.CapturedResponse
 import com.wangzan101.mika.core.cap.web.DevtoolsUnavailable
@@ -1096,14 +1097,16 @@ class WebScreen(
     private suspend fun resolve(tab: WebTab, ref: String, snapshotId: String): Target? {
         val snap = synchronized(history) { history.firstOrNull { it.id == snapshotId } } ?: return null
         if (snap.tab !== tab || snap.key == null) return null
-        val index = ref.removePrefix("@e").toIntOrNull()?.minus(1) ?: return null
+        val index = refIndex(ref) ?: return null
         val element = snap.snapshot.elements.getOrNull(index) ?: return null
         val s = script(tab)
-        val pageRef = snap.pageRef(ref)
+        // 下面几张表都以快照里的规范编号（@e3）为键；外部回传的 e3 / 3 先归一，否则查不到。
+        val canonical = "@e${index + 1}"
+        val pageRef = snap.pageRef(canonical)
         if (pageRef != null) {
             if (s.centerOf(pageRef, snap.key) != null) return Target(snap.key, pageRef, element, null, snap.scale)
         } else {
-            devtoolsTarget(tab, snap, ref, snap.key, element, null)?.let { return it }
+            devtoolsTarget(tab, snap, canonical, snap.key, element, null)?.let { return it }
         }
         val key = "w${tab.id}-r${++internalReads}"
         val fresh = read(tab, key, key, fuse = true)

@@ -4,6 +4,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import com.wangzan101.mika.core.cap.phone.PHONE_SNAPSHOT_PREFIX
 import com.wangzan101.mika.core.uistate.ElementLocator
 import com.wangzan101.mika.core.uistate.UiElement
+import com.wangzan101.mika.core.uistate.refIndex
 import java.util.UUID
 
 /** 手机读屏的 snapshotId:手机的前缀加随机串(看编号就知道是手机的,和网页的分得开)。 */
@@ -40,7 +41,7 @@ internal class NodeIds(private val keep: Int = 4) {
 
     @Synchronized
     fun lookup(ref: String, snapshotId: String): Lookup {
-        val index = ref.removePrefix("@e").toIntOrNull()?.minus(1) ?: return Lookup.Unknown
+        val index = refIndex(ref) ?: return Lookup.Unknown
         val i = history.indexOfFirst { it.id == snapshotId }
         if (i < 0) return Lookup.Unknown
         val snap = history[i]

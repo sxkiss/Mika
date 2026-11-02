@@ -60,7 +60,7 @@ class McpPhoneTools(
         ),
         Tool(
             "phone_tap",
-            "Tap an element by its ref (e.g., 'e3') or by normalized coordinates (x, y in 0-999).",
+            "Tap an element by its ref (e.g., '@e3' or 'e3') or by normalized coordinates (x, y in 0-999).",
             schema(emptyList()) {
                 putJsonObject("ref") { put("type", "string"); put("description", "Element ref from phone_observe") }
                 putJsonObject("x") { put("type", "integer"); put("description", "X coordinate 0-999") }

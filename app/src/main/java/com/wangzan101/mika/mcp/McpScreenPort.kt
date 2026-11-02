@@ -85,7 +85,7 @@ class McpScreenPort(
 
     override suspend fun tapRef(ref: String, snapshotId: String): ActionResult {
         // OCR 兜底产出的 ref 无障碍树里没有，按记下的像素点直接点
-        val at = ocrLock.withLock { ocrTargets[ref] }
+        val at = ocrLock.withLock { ocrTargets[ref] ?: ocrTargets[normalizeOcrRef(ref)] }
         if (at != null) return base.tapXY(at.first, at.second)
         return base.tapRef(ref, snapshotId)
     }
@@ -96,7 +96,7 @@ class McpScreenPort(
      */
     override suspend fun typeText(ref: String?, snapshotId: String?, text: String): ActionResult {
         if (ref != null) {
-            val at = ocrLock.withLock { ocrTargets[ref] }
+            val at = ocrLock.withLock { ocrTargets[ref] ?: ocrTargets[normalizeOcrRef(ref)] }
             if (at != null) {
                 val tapped = base.tapXY(at.first, at.second)
                 if (tapped !is ActionResult.Ok) return tapped
@@ -105,6 +105,9 @@ class McpScreenPort(
         }
         return base.typeText(ref, snapshotId, text)
     }
+
+    /** OCR 编号在快照里带 `@o` 前缀；外部回传时可能省掉 `@`，两种都认。 */
+    private fun normalizeOcrRef(ref: String): String = if (ref.startsWith("@")) ref else "@$ref"
 
     /** MCP 传进来的是 0–999 归一化坐标，换成像素再交给端口。 */
     override suspend fun tapXY(x: Int, y: Int): ActionResult {
