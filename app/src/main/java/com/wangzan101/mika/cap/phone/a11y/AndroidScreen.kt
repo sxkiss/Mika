@@ -142,7 +142,21 @@ class AndroidScreen(
     private val settingsPackage: String? by lazy { SystemPickers.settingsPackage(a11y.packageManager) }
 
     private fun windows() = a11y.windowsOn(displayId)
-    private fun read() = ScreenReader.read(windows(), display.width, display.height)
+
+    /**
+     * 读一次屏。虚拟屏上有窗口但读不出元素时（微信等 App 的节点被系统标成 isVisibleToUser=false），
+     * 放宽可见性过滤重读一次。坐标仍是屏幕绝对坐标，ref 点击照样可用。
+     */
+    private fun read(): ScreenRead {
+        val w = windows()
+        val strict = ScreenReader.read(w, display.width, display.height)
+        if (strict.entries.isNotEmpty() || w.isEmpty()) return strict
+        val loose = ScreenReader.read(w, display.width, display.height, includeInvisible = true)
+        if (loose.entries.isNotEmpty()) {
+            Log.d(TAG, "元素表为空，放宽可见性重读: ${loose.entries.size} 个元素，窗口=${w.size}")
+        }
+        return loose
+    }
     private fun treeHash() = ScreenReader.hash(windows())
 
     /** 显式使用系统命令或事件工具时按需建屏;普通任务等到第一次打开 App 才建。 */
