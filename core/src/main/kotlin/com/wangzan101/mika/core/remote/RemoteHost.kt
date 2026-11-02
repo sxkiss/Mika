@@ -30,6 +30,8 @@ class RemoteHost(
     loopbackToken: () -> String? = { null },
     device: DeviceAccess? = null,
     phoneTools: McpPhoneTools? = null,
+    /** Dynamic provider: called on each request so late-init'd phoneTools become visible. */
+    phoneToolsProvider: (() -> McpPhoneTools?)? = null,
     /** false 时 tools/list 只暴露 phone_*，不暴露 mika_run_task（纯 MCP 模式，不需要主模型）。 */
     exposeTaskTools: Boolean = true,
 ) {
@@ -39,7 +41,7 @@ class RemoteHost(
     val activity: StateFlow<RemoteActivity> = _activity.asStateFlow()
     private val service = RemoteTaskService(tasks)
     private val api = RemoteTaskApi(service, serverVersion, device)
-    private val rpc = McpRpc(if (exposeTaskTools) McpTaskTools(service, device) else null, phoneTools, serverVersion) { remote, name -> seen(remote, name) }
+    private val rpc = McpRpc(if (exposeTaskTools) McpTaskTools(service, device) else null, phoneTools, phoneToolsProvider, serverVersion) { remote, name -> seen(remote, name) }
     private var server: MiniHttpServer? = null
 
     val boundPort: Int get() = server?.port ?: -1

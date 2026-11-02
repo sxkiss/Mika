@@ -26,8 +26,10 @@ import java.util.Base64
  * 进到这里的请求已经过了 [RemoteAccess](令牌、来源、限流、路径)。
  */
 class McpRpc(
-    private val tools: McpTaskTools? = null,
+    private val tools: McpPhoneTools? = null,
     private val phoneTools: McpPhoneTools? = null,
+    /** Dynamic provider: called on each request so late-init'd phoneTools become visible. */
+    private val phoneToolsProvider: (() -> McpPhoneTools?)? = null,
     private val serverVersion: String,
     /** 每个过了门口、能读出来的请求:对方说自己是哪个客户端(没说时为空)。 */
     private val onRequest: (remote: java.net.InetAddress, clientName: String?) -> Unit = { _, _ -> },
@@ -147,7 +149,7 @@ class McpRpc(
     /** 合并任务工具和手机原语工具的定义数组。 */
     private fun allToolDefinitions(): JsonArray = buildJsonArray {
         tools?.definitions()?.forEach { add(it) }
-        phoneTools?.definitions()?.forEach { add(it) }
+        (phoneTools ?: phoneToolsProvider?.invoke())?.definitions()?.forEach { add(it) }
     }
 
     private fun callTool(params: JsonObject): Call {
@@ -157,13 +159,14 @@ class McpRpc(
             is JsonObject -> a
             else -> return Call.Bad("params.arguments must be an object")
         }
+        val pt = phoneTools ?: phoneToolsProvider?.invoke()
         val isTask = tools?.has(name) == true
-        val isPhone = phoneTools?.has(name) == true
+        val isPhone = pt?.has(name) == true
         if (!isTask && !isPhone) return Call.Bad("Unknown tool: $name")
         val out = try {
             runBlocking {
                 if (isTask) tools!!.call(name, args)
-                else Json.decodeFromString<JsonObject>(phoneTools!!.call(name, args.toString()))
+                else Json.decodeFromString<JsonObject>(pt!!.call(name, args.toString()))
             }
         } catch (e: McpTaskTools.ToolError) {
             return Call.Done(toolResult(e.message ?: "error", null, isError = true))

@@ -99,7 +99,8 @@ class McpRuntime(
         val network = want == McpModes.Listen.PrivateNetworks
         val h = RemoteHost(tasks, { if (settings.enabled.value) settings.token() else null }, settings.port, allowAllInterfaces = network,
             serverVersion = BuildConfig.VERSION_NAME, onError = { Log.w(TAG, "computer access server error", it) },
-            loopbackToken = usb::token, device = device.access, phoneTools = phoneProvider?.phoneTools,
+            loopbackToken = usb::token, device = device.access, phoneTools = null,
+            phoneToolsProvider = { phoneProvider?.phoneTools },
             exposeTaskTools = false)
         return try {
             h.start()
