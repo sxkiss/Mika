@@ -291,8 +291,8 @@ class MikaApp : Application(), WebOwner, SandboxOwner, TaskEnvironment.Owner, Ph
         super.onCreate()
         // 提前初始化 MCP 组件（lazy 首次访问即创建）：让 phone_* 工具在用户
         // 打开「电脑连接」页之前就开始监听无障碍/壳，而不是等设置页首次访问才启动。
-        @Suppress("UNUSED_EXPRESSION") mcpPhoneProvider
-        @Suppress("UNUSED_EXPRESSION") mcp
+        mcpPhoneProvider
+        mcp
         // 界面以外的文字(通知、服务、悬浮胶囊)按 App 语言取
         AppLanguage.applyDefaultLocale(this)
         UiText.source = ResourceTexts { AppLanguage.resources(this) }

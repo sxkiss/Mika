@@ -54,7 +54,9 @@ class McpPhoneProvider(context: Context) {
             // emptyFlow 完成后 combine 永远不发射，工具列表一直为空。
             val a11yFlow = ScreenAccessibility.instance
             val shellPolling = kotlinx.coroutines.flow.flow {
-                while (isActive) {
+                // flow{} 的 receiver 是 FlowCollector，不是 CoroutineScope，不能用 isActive。
+                // 取消由 delay 抛 CancellationException 自然结束循环。
+                while (true) {
                     emit(helperHub()?.shell?.value)
                     kotlinx.coroutines.delay(500L)
                 }
