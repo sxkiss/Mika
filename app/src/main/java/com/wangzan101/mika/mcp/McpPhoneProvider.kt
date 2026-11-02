@@ -49,10 +49,17 @@ class McpPhoneProvider(context: Context) {
     /** 监听无障碍服务；就绪且 shell 可用时构建工具集（优先使用 Agent 虚拟屏）。 */
     fun startListening(helperHub: () -> HelperHub? = { null }) {
         scope.launch {
-            // 同时监听无障碍与 shell 流：任何一个就绪都会触发重新评估；
-            // 只 watch 无障碍会错过 shell 晚到、或壳先就绪无障碍后连上的情况。
-            val hubFlow = helperHub()?.shell ?: kotlinx.coroutines.flow.emptyFlow<IMikaShell?>()
-            combine(ScreenAccessibility.instance, hubFlow) { a11y, shell -> Pair(a11y, shell) }.collect { (a11y, shell) ->
+            // 无障碍流 + 每 500ms 轮询 shell，直到两者都就绪。
+            // 不能用 StateFlow.combine 一次性绑：如果 helperHub 调用时 shell 为 null（lazy 未初始化），
+            // emptyFlow 完成后 combine 永远不发射，工具列表一直为空。
+            val a11yFlow = ScreenAccessibility.instance
+            val shellPolling = kotlinx.coroutines.flow.flow {
+                while (isActive) {
+                    emit(helperHub()?.shell?.value)
+                    kotlinx.coroutines.delay(500L)
+                }
+            }
+            combine(a11yFlow, shellPolling) { a11y, shell -> Pair(a11y, shell) }.collect { (a11y, shell) ->
                 if (a11y != null && shell != null) {
                     val d = ensureDisplay(shell)
                     _phoneTools.set(McpPhoneTools(createScreenPort(a11y, shell, d)) { getInstalledApps() })
