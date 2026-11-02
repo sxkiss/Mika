@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,3 +44,20 @@ jobs:
           name: mika-debug-apk
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+
+      - name: Publish to GitHub Releases
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.1.31-build${{ github.run_number }}
+          name: Mika v0.1.31 (build ${{ github.run_number }})
+          body: |
+            自动构建的 debug APK。
+
+            - commit: ${{ github.sha }}
+            - 触发: ${{ github.event.head_commit.message }}
+          files: app/build/outputs/apk/debug/*.apk
+          prerelease: true
+          generate_release_notes: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
