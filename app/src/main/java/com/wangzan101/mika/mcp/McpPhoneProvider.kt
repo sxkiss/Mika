@@ -63,9 +63,12 @@ class McpPhoneProvider(context: Context) {
             }
             combine(a11yFlow, shellPolling) { a11y, shell -> Pair(a11y, shell) }.collect { (a11y, shell) ->
                 if (a11y != null && shell != null) {
-                    val d = ensureDisplay(shell)
+                    // 微信等 App 在虚拟屏上不上报无障碍窗口（元素树恒为空），导致 phone_observe 读不到界面、
+                    // 无法用 ref 点击。MCP 手机控制改为固定走主屏（恢复原版行为）：元素树完整，可直接点 ref。
+                    // 虚拟屏保留给 App 内自动任务使用，MCP 不再抢占/使用虚拟屏。
+                    val d: AgentDisplay? = null
                     _phoneTools.set(McpPhoneTools(createScreenPort(a11y, shell, d)) { getInstalledApps() })
-                    Log.d(TAG, if (d != null) "MCP 手机控制已启用（虚拟屏 ${d.displayId}）" else "MCP 手机控制已启用（回退主屏）")
+                    Log.d(TAG, "MCP 手机控制已启用（主屏模式，元素树可用）")
                 } else {
                     // 任一组件断开：释放虚拟屏，工具下线
                     _phoneTools.set(null)
