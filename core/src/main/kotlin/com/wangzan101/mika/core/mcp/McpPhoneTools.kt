@@ -174,9 +174,43 @@ class McpPhoneTools(
         val verbose = args["verbose"]?.jsonPrimitive?.booleanOrNull ?: false
         val snapshot = runCatching { screen.snapshot() }.getOrElse { return errorJson(it.message ?: "snapshot failed") }
         lastSnapshotId = snapshot.snapshotId
+        val diagnostics = buildJsonObject {
+            put("unreadableApp", snapshot.unreadableApp ?: "none")
+            put("hasWindow", snapshot.hasWindow)
+            put("windows_count", snapshot.windows.size)
+            putJsonObject("windows") {
+                snapshot.windows.forEachIndexed { i, w ->
+                    put(i.toString(), buildJsonObject {
+                        put("id", w.id)
+                        put("type", w.type)
+                        put("pkg", w.packageName ?: "null-root")
+                        put("layer", w.layer)
+                        put("active", w.active)
+                        put("child_count", w.nodes.size)
+                    })
+                }
+            }
+        }
         return buildJsonObject {
             put("snapshot_id", snapshot.snapshotId)
             put("package", snapshot.packageName ?: "unknown")
+            putJsonObject("diagnostics") {
+                put("unreadableApp", snapshot.unreadableApp ?: "none")
+                put("hasWindow", snapshot.hasWindow)
+                put("windows_count", snapshot.windows.size)
+                putJsonObject("windows") {
+                    snapshot.windows.forEachIndexed { i, w ->
+                        put(i.toString(), buildJsonObject {
+                            put("id", w.id)
+                            put("type", w.type)
+                            put("pkg", w.packageName ?: "null-root")
+                            put("layer", w.layer)
+                            put("active", w.active)
+                            put("child_count", w.nodes.size)
+                        })
+                    }
+                }
+            }
             putJsonArray("elements") {
                 snapshot.elements.forEach { elem ->
                     add(buildJsonObject {
